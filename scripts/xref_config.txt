@@ -1,0 +1,45 @@
+UniParc	http://purl.uniprot.org/uniparc/	http://purl.uniprot.org/core/Sequence			
+Uniprot/SWISSPROT	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Reviewed_Protein			
+Uniprot/SWISSPROT_predicted	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Reviewed_Protein			
+Uniprot/SPTREMBL	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Protein			
+EntrezGene	http://identifiers.org/ncbigene/	http://purl.obolibrary.org/obo/SO_0000704			
+protein_id	http://identifiers.org/insdc/	http://rdf.ebi.ac.uk/resource/ensembl/NucleotideSequenceDatabase			
+GO	http://purl.obolibrary.org/obo/			s/GO:/GO_/	
+ArrayExpress					1
+Uniprot_gn					1
+Vega_translation					1
+Fantom					1
+Clone_based_ensembl_transcript					1
+RFAM_trans_name					1
+RefSeq_peptide			refseq		
+EntrezGene		http://purl.obolibrary.org/obo/SO_0000704	ncbigene		
+miRBase_trans_name					1
+IKMCs_No_products_available_yet					1
+MGI			mgd		
+EMBL			ena.embl		
+ChEMBL	http://rdf.ebi.ac.uk/resources/chembl/				
+RefSeq_peptide_predicted			refseq		
+Clone_based_vega_transcript					1
+Uniprot_gn					1
+shares_CDS_and_UTR_with_OTTT					1
+RefSeq_mRNA			refseq		
+Vega_transcript					1
+Clone_based_vega_gene					1
+RFAM			rfam		
+RefSeq_ncRNA			refseq		
+CCDS			ccds		
+IKMCs_Vector_available					1
+RefSeq_ncRNA_predicted			refseq		
+miRBase			mirbase		
+OTTT					1
+RefSeq_mRNA_predicted			refseq		
+shares_CDS_with_OTTT					1
+MGI_trans_name					1
+IKMCs_ES_cells_available					1
+IKMCs_Mice_available					1
+WikiGene			wikigenes		
+UCSC					1
+goslim_goa	http://purl.obolibrary.org/obo/			s/GO:/GO_/	
+PDB			pdb		
+Uniprot_gn_trans_name					1
+UniGene			unigene		

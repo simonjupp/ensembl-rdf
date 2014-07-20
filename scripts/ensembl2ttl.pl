@@ -16,26 +16,93 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+=head1 NAME
+
+    ensembl2ttl - Convert Ensembl core data to RDF turtle
+
+=head1 AUTHOR
+
+Kieron Taylor, Simon Jupp, European Bioinformatics Institute
+
+=head1 SYNOPSIS
+    ensembl2ttl [options]
+     Options:
+       -species         The common name for species to conver e.g. Human
+       -version         The Ensembl version e.g. 75 
+       -help            brief help message
+       -man             full documentation
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-species>
+
+       The common name for species to conver e.g. Human
+
+=item B<-version>
+
+       The Ensembl version e.g. 75
+
+=item B<-help>
+
+    Print a brief help message and exits.
+
+=item B<-man>
+
+    Prints the manual page and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+    Script to dump Ensembl triples. It was lashed together rapidly, and could stand to use a library for the writing of triples, with accommodation for the scale of the data involved.
+    Requires installation of Ensembl Core and Compara APIs, as well as dependencies such as BioPerl
+
 =cut
 
-# Author: Kieron Taylor, Simon Jupp, European Bioinformatics Institute
-
-# Script to dump Ensembl triples. It was lashed together rapidly, and could stand to use a library for the writing of triples, with accommodation for the scale of the data involved.
-# Requires installation of Ensembl Core and Compara APIs, as well as dependencies such as BioPerl
 
 use strict;
+
+use Getopt::Long;
+use Pod::Usage;
 use Bio::EnsEMBL::Registry;
 use Bio::EnsEMBL::DBSQL::DBAdaptor;
 
+my $species = '';
+my $version = '';
+my $path;
+my $split;
+my $virtgraph;
+my $man = 0;
+my $limit;
+my $help = 0;
 
-# Choice of database host is a factor in how fast the script runs. Try to find your nearest mirror, and check the database version before running.
-Bio::EnsEMBL::Registry->load_registry_from_db(
-  -host => 'mysql-ensembl-mirror.ebi.ac.uk',
-  -user => 'anonymous',
-  -port => 4240,
-  -db_version => 75,
-  -no_cache => 1,
-);
+GetOptions (
+    'species=s' => \$species,
+    'version=s' => \$version,
+    'virtgraph' => \$virtgraph,
+    'out=s' => \$path,
+    'split=i' => \$split,
+    'limit=i' => \$limit,
+    'help|?' => \$help, 
+    man => \$man
+    ) or pod2usage(2);
+pod2usage(1) if $help;
+pod2usage(-exitval => 0, -verbose => 2) if $man;
+
+if (!$species || !$version) {
+    pod2usage(1);
+}
+print STDOUT "Using Ensembl core DB $species version $version\n";
+
+my $outfile = ${species}.'_'.${version}.'.ttl';
+if ($path) {
+    $outfile = $path."/".$outfile;
+}
+
+# create the output file
+open OUT, ">$outfile" || die "Can't open out file $outfile\n";
 
 # common prefixes used
 my %prefix = (
@@ -55,13 +122,24 @@ my %prefix = (
 foreach (keys %prefix) {
   triple('@prefix',$_.':',u($prefix{$_}) );
 }
-my $ga = Bio::EnsEMBL::Registry->get_adaptor('Human','Core','Gene');
+
+# Choice of database host is a factor in how fast the script runs. Try to find your nearest mirror, and check the database version before running.
+Bio::EnsEMBL::Registry->load_registry_from_db(
+  -host => 'mysql-ensembl-mirror.ebi.ac.uk',
+  -user => 'anonymous',
+  -port => 4240,
+  -db_version => $version,
+  -no_cache => 1,
+);
+
+
+my $ga = Bio::EnsEMBL::Registry->get_adaptor($species,'Core','Gene');
 
 my $ontoa =
     Bio::EnsEMBL::Registry->get_adaptor( 'Multi', 'Ontology', 'OntologyTerm' );
 
 # get all genes
-my $genes = $ga->fetch_all;
+my $genes = $ga->fetch_all();
 
 # create a lookup table for term to ontology id
 my %term2ontologyId;
@@ -69,7 +147,7 @@ my %term2ontologyId;
 # simple count for testing
 my $count = 0;
 
-my $meta = Bio::EnsEMBL::Registry->get_adaptor('Human','Core','MetaContainer');
+my $meta = Bio::EnsEMBL::Registry->get_adaptor($species,'Core','MetaContainer');
 
 # create a map of taxon id to species name, we will create some triples for these at the end
 
@@ -84,7 +162,20 @@ triple('taxon:'.$taxon_id, 'rdfs:label', '"'.$scientific_name.'"');
 # get the current ensembl release number 
 my $schemaVersion = $meta->get_schema_version;
 
+# check if we want to create a virtuoso graph file for this output file
+if ($virtgraph) {
+    my $versionGraphUri = "http://rdf.ebi.ac.uk/dataset/ensembl/".$version;
+    my $graphUri = $versionGraphUri."/".$taxon_id;
+    my $graphFile = $outfile.'.graph';
+    open GRAPH, ">$graphFile" || die "Can't create the virtuoso graph file\n";
+    print GRAPH $graphUri;
+    close GRAPH;
+    # make the species graph a subgraph of the version graph
+    triple (u($graphUri), '<http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf>', u($versionGraphUri)); 
+}
+
 # start to process all genes
+#my $gene = $ga->fetch_by_stable_id('ENSG00000139618');
 while (my $gene = shift @$genes) {
   $count++;
 
@@ -105,9 +196,9 @@ while (my $gene = shift @$genes) {
   # add some useful meta data
   triple('ensembl:'.$gene->stable_id, 'rdfs:label', ($gene->external_name)? '"'.$gene->external_name.'"':'"'.$gene->display_id.'"' );
 
+  # we will get all synonyms as mappings using the mapings script
   triple('ensembl:'.$gene->stable_id, 'dc:description', '"'.$gene->description.'"');
-# we will get all synonyms as mappings using the mapings script
-# triple('ensembl:'.$gene->stable_id, 'skos:altLabel', '"'.$gene->external_name.'"');
+  dump_synonyms($gene);
   
   # relate gene to its taxon
   taxonTriple('ensembl:'.$gene->stable_id);
@@ -173,8 +264,8 @@ while (my $gene = shift @$genes) {
   foreach my $alt_gene (map {$_->[0]} @$similar_genes) {
     triple('ensembl:'.$gene->stable_id, 'sio:SIO_000558', 'ensembl:'.$alt_gene->stable_id);
   }
-  print STDERR ".\n";
-  last if ($count == 100);
+  print STDERR ".";
+  last if ($limit && $count == $limit);
 }
 print "Dumped triples for $count genes \n";
 
@@ -189,11 +280,11 @@ sub dump_feature {
     
     # generate a version specific portion of a URL that includes the database version, species, assembly version and region name
     # e.g. The URI for human chromosme 1 in ensmebl 75 on assembly GRCh37 would be http://rdf.ebi.ac.uk/resource/ensembl/75/homo_sapiens/GRCh37/1
-    my $version_url = $prefix{ensembl}.$schemaVersion."/".$cs->species. '/'.$cs->version.'/'.$feature->seq_region_name; 
+    my $version_url = $prefix{ensembl}.$schemaVersion."/".$taxon_id. '/'.$cs->version.'/'.$feature->seq_region_name; 
     
     # we also create a non versioned URI that is a super class e.g. 
     # http://rdf.ebi.ac.uk/resource/ensembl/homo_sapiens/1
-    my $non_version_url = $prefix{ensembl}.$cs->species.'/'.$feature->seq_region_name; 
+    my $non_version_url = $prefix{ensembl}.$taxon_id.'/'.$feature->seq_region_name; 
 
     # these are typed as chromosome or patches e.g. HG991_PATCH
     my $reference = u($version_url);
@@ -203,13 +294,14 @@ sub dump_feature {
 	    triple(u($non_version_url), 'rdfs:subClassOf', 'obo:SO_0000340');
 	}
 	else {
-	    triple(u($non_version_url), 'rdfs:subClassOf', 'ensembl:'.$cs->name);
+	    triple(u($non_version_url), 'rdfs:subClassOf', 'term:'.$cs->name);
+	    triple('term:'.$cs->name, 'rdfs:subClassOf', 'term:EnsemblRegion');
 	}
 	triple(u($non_version_url), 'rdfs:label', '"'.$cs->name.' '.$feature->seq_region_name.'"');	
 	triple($reference, 'rdfs:label', '"'.$cs->name.' '.$feature->seq_region_name.'"');	
 	triple($reference, 'dc:identifier', '"'.$feature->seq_region_name.'"');	
-	triple($reference, 'ensembl:inEnsemblSchemaNumber', '"'.$schemaVersion.'"');	
-	triple($reference, 'ensembl:inEnsemblAssembly', '"'.$cs->version.'"');	
+	triple($reference, 'term:inEnsemblSchemaNumber', '"'.$schemaVersion.'"');	
+	triple($reference, 'term:inEnsemblAssembly', '"'.$cs->version.'"');	
 	taxonTriple($reference);
 	taxonTriple(u($non_version_url));
 
@@ -222,9 +314,11 @@ sub dump_feature {
     my $begin = u($version_url.':'.$feature->start.':'.$feature->strand);
     my $end = u($version_url.':'.$feature->end.':'.$feature->strand);
     triple('ensembl:'.$feature->stable_id, 'faldo:location', $location);
+    triple($location, 'rdfs:label', '"'.$cs->name.' '.$feature->seq_region_name.':'.$feature->start.'-'.$feature->end.':'.$feature->strand.'"');
     triple($location, 'rdf:type', 'faldo:Region');
     triple($location, 'faldo:begin', $begin);
     triple($location, 'faldo:end', $end);
+    triple($location, 'faldo:reference', $reference);
     triple($begin, 'rdf:type', 'faldo:ExactPosition');
     triple($begin, 'rdf:type', ($feature->strand == 1)? 'faldo:ForwardStrandPosition':'faldo:ReverseStrandPosition');
     triple($begin, 'faldo:position', ($feature->strand == 1) ? $feature->start : $feature->end);
@@ -238,6 +332,19 @@ sub dump_feature {
     triple('ensembl:'.$feature->stable_id, 'dc:identifier', '"'.$feature->stable_id.'"' );
 }
 
+sub dump_synonyms {
+
+    my $feature = shift;
+    
+    my $db_entries = $feature->get_all_DBEntries();
+
+    foreach my $dbe ( @{$db_entries} ) {
+	foreach my $syn ( @{ $dbe->get_all_synonyms }) {	    
+	    triple('ensembl:'.$feature->stable_id, 'skos:altLabel', '"'.$syn.'"');
+	}
+    }
+}
+
 sub u {
     my $stuff= shift;
     return '<'.$stuff.'>';
@@ -245,7 +352,7 @@ sub u {
 sub triple {
     my ($subject,$predicate,$object) = @_;
     
-    printf "%s %s %s .\n",$subject,$predicate,$object;
+    printf OUT "%s %s %s .\n",$subject,$predicate,$object;
 }
 
 sub taxonTriple {
@@ -264,13 +371,25 @@ sub getSOOntologyId {
     
     if (!$typeterm) {
 	print STDERR "WARN: Can't find SO term for $term\n";
-	$term2ontologyId{$term} = "obo:" . $term; 
-	return $term2ontologyId{$term};
+	$term2ontologyId{$term} = "term:" . $term; 
+	# make the biotype a child of an ensmebl biotype
+	triple($term2ontologyId{$term}, 'rdfs:subClassOf', 'term:EnsemblFeature');
+ 	return $term2ontologyId{$term};
     }
     
     my $id = $typeterm->accession;
     $id=~s/SO:/obo:SO_/;
-    $term2ontologyId{$term} = $id; 
+    $term2ontologyId{$term} = $id;
+
+    # make the biotype a child of an ensmebl biotype
+    triple($term2ontologyId{$term}, 'rdfs:subClassOf', 'term:EnsemblFeature');
+ 
     return $term2ontologyId{$term};
     
 }
+
+sub dumpVirtuoso {
+
+
+}
+close OUT;
