@@ -1,0 +1,294 @@
+<!doctype html>
+<!--
+  ~ Copyright (c) 2013 EMBL - European Bioinformatics Institute
+  ~ Licensed under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the
+  ~ License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+  ~ either express or implied. See the License for the specific language governing permissions
+  ~ and limitations under the License.
+  -->
+
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+
+    <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+ More info: h5bp.com/b/378 -->
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> --> <!-- Not yet implemented -->
+
+    <title>Atlas &lt; RDF &lt; EMBL-EBI</title>
+    <meta name="description" content="EMBL-EBI"><!-- Describe what this page is about -->
+    <meta name="keywords" content="bioinformatics, europe, institute"><!-- A few keywords that relate to the content of THIS PAGE (not the whol project) -->
+    <meta name="author" content="EMBL-EBI"><!-- Your [project-name] here -->
+
+    <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+    <!-- CSS: implied media=all -->
+    <!-- CSS concatenated and minified via ant build script-->
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/boilerplate-style.css">
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/ebi-global.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/ebi-visual.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/984-24-col-fluid.css" type="text/css" media="screen">
+
+    <!-- you can replace this with [projectname]-colours.css. See http://frontier.ebi.ac.uk/web/style/colour for details of how to do this -->
+    <!-- also inform ES so we can host your colour palette file -->
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/embl-petrol-colours.css" type="text/css" media="screen">
+
+    <!-- for production the above can be replaced with -->
+    <!--
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/mini/ebi-fluid-embl.css">
+    -->
+
+
+    <style type="text/css">
+            /* You have the option of setting a maximum width for your page, and making sure everything is centered */
+            /* body { max-width: 1600px; margin: 0 auto; } */
+    </style>
+
+    <!--<link rel="stylesheet" href="css/thickbox.css" type="text/css" media="screen">-->
+    <link rel="stylesheet" href="css/lode-style.css" type="text/css" media="screen">
+
+    <!-- end CSS-->
+
+
+    <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+
+    <!-- Full build -->
+    <!-- <script src="//www.ebi.ac.uk/web_guidelines/js/libs/modernizr.minified.2.1.6.js"></script> -->
+
+    <!-- custom build (lacks most of the "advanced" HTML5 support -->
+    <script src="//www.ebi.ac.uk/web_guidelines/js/libs/modernizr.custom.49274.js"></script>
+
+</head>
+
+<body onload="init()" class="level2"><!-- add any of your classes or IDs -->
+<div id="skip-to">
+    <ul>
+        <li><a href="#content">Skip to main content</a></li>
+        <li><a href="#local-nav">Skip to local navigation</a></li>
+        <li><a href="#global-nav">Skip to EBI global navigation menu</a></li>
+        <li><a href="#global-nav-expanded">Skip to expanded EBI global navigation menu (includes all sub-sections)</a></li>
+    </ul>
+</div>
+
+<div id="wrapper" class="container_24">
+    <header>
+        <div id="global-masthead" class="masthead grid_24">
+            <!--This has to be one line and no newline characters-->
+            <a href="//www.ebi.ac.uk/" title="Go to the EMBL-EBI homepage"><img src="//www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/EMBL_EBI_Logo_white.png" alt="EMBL European Bioinformatics Institute"></a>
+
+            <nav>
+                <ul id="global-nav">
+                    <!-- set active class as appropriate -->
+                    <li class="first active" id="services"><a href="//www.ebi.ac.uk/services">Services</a></li>
+                    <li id="research"><a href="//www.ebi.ac.uk/research">Research</a></li>
+                    <li id="training"><a href="//www.ebi.ac.uk/training">Training</a></li>
+                    <li id="industry"><a href="//www.ebi.ac.uk/industry">Industry</a></li>
+                    <li id="about" class="last"><a href="//www.ebi.ac.uk/about">About us</a></li>
+                </ul>
+            </nav>
+
+        </div>
+
+        <div id="local-masthead" class="masthead grid_24 nomenu" style="background-color: #E1EEE9">
+
+            <!-- local-title -->
+            <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
+
+            <div class="logo-title" id="local-title">
+
+                <a href="./" title="Back to Atlas RDF homepage">
+                    <img style="width: 80px;height: 80px; display: inline;" alt="expression atlas linked data logo" src="images/atlas_rdf_logo_80px.gif"/>
+
+                </a><span style="padding-top: 5px"><h1 style="color: #000000; text-shadow: 0px 0px #E1EEE9">Expression Atlas Linked Data</h1></span>
+            </div>
+
+            <!-- /local-title -->
+
+            <!-- local-nav -->
+            <nav>
+                <ul class="grid_24" id="local-nav">
+                    <li class="first">
+                        <a href="./index.html">Atlas RDF</a>
+                    </li>
+                    <!--<li>-->
+                        <!--<a href="./about.html">Getting Started</a>-->
+                    <!--</li>-->
+                    <li>
+                        <a href="./sparql">SPARQL</a>
+                    </li>
+                    <li class="active">
+                        <a href="./schema.html">Schema</a>
+                    </li>
+                    <li class="last">
+                        <a href="./download.html">Download</a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /local-nav -->
+
+        </div>
+    </header>
+
+
+    <div id="content" role="main" class="grid_24 clearfix">
+
+        <nav id="breadcrumb">
+            <p>
+                <a href="./gxa">Atlas RDF</a> &gt;
+                Atlas ontology mappings
+            </p>
+        </nav>
+
+        <div class="container">
+            <section class="grid_18 alpha">
+                <h2>Atlas OWL ontology mappings</h2>
+
+                <p>The table below shows the relationships from core Atlas ontology terms and external ontology terms</p>
+
+                <table id="results-table"><th>Atlas term</th><th>Label</th><th>Description</th><th>Relation</th><th>Related term id</th><tbody><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FAssay" class="graph-link">atlasterms:Assay</a></span></td><td>Assay</td><td>An assay is an investigative (analytic) procedure in laboratory medicine, pharmacology, environmental biology, and molecular biology for qualitatively assessing or quantitatively measuring the presence or amount or the functional activity of a target entity (the analyte) which can be a drug or biochemical substance or a cell in an organism or organic sample.</td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_001007" class="graph-link">sio:SIO_001007</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FAssay" class="graph-link">atlasterms:Assay</a></span></td><td>Assay</td><td>An assay is an investigative (analytic) procedure in laboratory medicine, pharmacology, environmental biology, and molecular biology for qualitatively assessing or quantitatively measuring the presence or amount or the functional activity of a target entity (the analyte) which can be a drug or biochemical substance or a cell in an organism or organic sample.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FOBI_0000070" class="graph-link">obo:OBI_0000070</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FAssay" class="graph-link">atlasterms:Assay</a></span></td><td>Assay</td><td>An assay is an investigative (analytic) procedure in laboratory medicine, pharmacology, environmental biology, and molecular biology for qualitatively assessing or quantitatively measuring the presence or amount or the functional activity of a target entity (the analyte) which can be a drug or biochemical substance or a cell in an organism or organic sample.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_001007" class="graph-link">sio:SIO_001007</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FDecreasedDifferentialExpressionRatio" class="graph-link">atlasterms:DecreasedDifferentialExpressionRatio</a></span></td><td>Decreased differential expression ratio</td><td>A descreased ratio of gene expression values from a test sample compared to a control sample.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_001082" class="graph-link">sio:SIO_001082</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FDifferentialExpressionRatio" class="graph-link">atlasterms:DifferentialExpressionRatio</a></span></td><td>Differential Expression Ratio</td><td>The ratio of gene expression values from a test sample compared to a control sample.</td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.ebi.ac.uk%2Fefo%2FEFO_0004034" class="graph-link">efo:EFO_0004034</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FDifferentialExpressionRatio" class="graph-link">atlasterms:DifferentialExpressionRatio</a></span></td><td>Differential Expression Ratio</td><td>The ratio of gene expression values from a test sample compared to a control sample.</td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_001078" class="graph-link">sio:SIO_001078</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FDifferentialExpressionRatio" class="graph-link">atlasterms:DifferentialExpressionRatio</a></span></td><td>Differential Expression Ratio</td><td>The ratio of gene expression values from a test sample compared to a control sample.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.ebi.ac.uk%2Fefo%2FEFO_0004034" class="graph-link">efo:EFO_0004034</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FDifferentialExpressionRatio" class="graph-link">atlasterms:DifferentialExpressionRatio</a></span></td><td>Differential Expression Ratio</td><td>The ratio of gene expression values from a test sample compared to a control sample.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_001078" class="graph-link">sio:SIO_001078</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FDifferentialExpressionAnalysis" class="graph-link">atlasterms:DifferentialExpressionAnalysis</a></span></td><td>Differential expression analysis</td><td>A differential expression analysis data transformation is a data transformation that has objective differential expression analysis</td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FOBI_0000650" class="graph-link">obo:OBI_0000650</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FDifferentialExpressionAnalysis" class="graph-link">atlasterms:DifferentialExpressionAnalysis</a></span></td><td>Differential expression analysis</td><td>A differential expression analysis data transformation is a data transformation that has objective differential expression analysis</td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_000594" class="graph-link">sio:SIO_000594</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FDifferentialExpressionAnalysis" class="graph-link">atlasterms:DifferentialExpressionAnalysis</a></span></td><td>Differential expression analysis</td><td>A differential expression analysis data transformation is a data transformation that has objective differential expression analysis</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FOBI_0000650" class="graph-link">obo:OBI_0000650</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FDifferentialExpressionAnalysis" class="graph-link">atlasterms:DifferentialExpressionAnalysis</a></span></td><td>Differential expression analysis</td><td>A differential expression analysis data transformation is a data transformation that has objective differential expression analysis</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_000594" class="graph-link">sio:SIO_000594</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FExperiment" class="graph-link">atlasterms:Experiment</a></span></td><td>Experiment</td><td>An experiment is an investigation that has the goal of verifying, falsifying, or establishing the validity of a hypothesis. </td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_000994" class="graph-link">sio:SIO_000994</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FExperiment" class="graph-link">atlasterms:Experiment</a></span></td><td>Experiment</td><td>An experiment is an investigation that has the goal of verifying, falsifying, or establishing the validity of a hypothesis. </td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_000994" class="graph-link">sio:SIO_000994</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FExperimentalFactor" class="graph-link">atlasterms:ExperimentalFactor</a></span></td><td>Experimental Factor</td><td>An experimental factor is a variable that may change within the scope of a given experiment.</td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_000367" class="graph-link">sio:SIO_000367</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FExperimentalFactor" class="graph-link">atlasterms:ExperimentalFactor</a></span></td><td>Experimental Factor</td><td>An experimental factor is a variable that may change within the scope of a given experiment.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_000367" class="graph-link">sio:SIO_000367</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FGene" class="graph-link">atlasterms:Gene</a></span></td><td>Gene</td><td>A region (or regions) that includes all of the sequence elements necessary to encode a functional transcript. A gene may include regulatory regions, transcribed regions and/or other functional sequence regions.</td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_010035" class="graph-link">sio:SIO_010035</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FGene" class="graph-link">atlasterms:Gene</a></span></td><td>Gene</td><td>A region (or regions) that includes all of the sequence elements necessary to encode a functional transcript. A gene may include regulatory regions, transcribed regions and/or other functional sequence regions.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FSO_0000704" class="graph-link">obo:SO_0000704</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FGene" class="graph-link">atlasterms:Gene</a></span></td><td>Gene</td><td>A region (or regions) that includes all of the sequence elements necessary to encode a functional transcript. A gene may include regulatory regions, transcribed regions and/or other functional sequence regions.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_010035" class="graph-link">sio:SIO_010035</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FIncreasedDifferentialExpressionRatio" class="graph-link">atlasterms:IncreasedDifferentialExpressionRatio</a></span></td><td>Increased differential expression ratio</td><td>A increased ratio of gene expression values from a test sample compared to a control sample.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_001081" class="graph-link">sio:SIO_001081</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FProbeDesignElement" class="graph-link">atlasterms:ProbeDesignElement</a></span></td><td>Probe design element</td><td>The probe which is used in an assay such as an array for detecting sequence or gene expression levels.</td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.ebi.ac.uk%2Fefo%2FEFO_0004903" class="graph-link">efo:EFO_0004903</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FProbeDesignElement" class="graph-link">atlasterms:ProbeDesignElement</a></span></td><td>Probe design element</td><td>The probe which is used in an assay such as an array for detecting sequence or gene expression levels.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.ebi.ac.uk%2Fefo%2FEFO_0004903" class="graph-link">efo:EFO_0004903</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FSample" class="graph-link">atlasterms:Sample</a></span></td><td>Sample</td><td>a sample is a limited quantity of something (e.g. an individual or set of individuals from a population, or a portion of a substance) to be used for testing, analysis, inspection, investigation, demonstration, or trial use.</td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FOBI_0100051" class="graph-link">obo:OBI_0100051</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FSample" class="graph-link">atlasterms:Sample</a></span></td><td>Sample</td><td>a sample is a limited quantity of something (e.g. an individual or set of individuals from a population, or a portion of a substance) to be used for testing, analysis, inspection, investigation, demonstration, or trial use.</td><td><span><a href="./describe?uri=http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf" class="graph-link">rdfs:subClassOf</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FSIO_010412" class="graph-link">sio:SIO_010412</a></span></td></tr><tr><td><span><a href="./describe?uri=http%3A%2F%2Frdf.ebi.ac.uk%2Fterms%2Fatlas%2FSample" class="graph-link">atlasterms:Sample</a></span></td><td>Sample</td><td>a sample is a limited quantity of something (e.g. an individual or set of individuals from a population, or a portion of a substance) to be used for testing, analysis, inspection, investigation, demonstration, or trial use.</td><td><span><a href="./describe?uri=http%3A%2F%2Fsemanticscience.org%2Fresource%2FequivalentTo" class="graph-link">sio:equivalentTo</a></span></td><td><span><a href="./describe?uri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FOBI_0100051" class="graph-link">obo:OBI_0100051</a></span></td></tr></tbody></table>
+            </section>
+
+            <section class="grid_6 omega">
+                <h3>Schema documentation</h3>
+                <ul id="secondary-nav">
+                    <li><a href="schema.html">Atlas RDF schema overview</a>
+                        <ul>
+                            <a href="gxaterms.html">Atlas OWL Ontology</a>
+                        </ul>
+                    </li>
+                    <li><a href="mappings.html">Atlas ontology mappings</a></li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+
+
+
+    <footer>
+        <!-- Optional local footer (insert citation / project-specific copyright / etc here -->
+
+        <div id="local-footer" class="grid_24 clearfix">
+            <div class="grid_8 alpha">
+                <h3 class="icon icon-generic" data-icon="L">Atlas RDF Related Links</h3>
+                <ul>
+                    <li class="first">
+                        <a href="http://www.ebi.ac.uk/efo">Experimental Factor Ontology (EFO)</a>
+                    </li>
+                    <li>
+                        <a href="http://www.ebi.ac.uk/gxa">Gene Expression Atlas</a>
+                    </li>
+                    <li>
+                        <a href="http://www.ebi.ac.uk/arrayexpress">ArrayExpress</a>
+                    </li>
+                    <li class="last">
+                        <a href="http://www.ebi.ac.uk/fgpt">Functional Genomics Production Team</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- End optional local footer -->
+
+
+        <div id="global-footer" class="grid_24">
+
+            <nav id="global-nav-expanded">
+
+                <div class="grid_4 alpha">
+                    <h3 class="embl-ebi"><a href="//www.ebi.ac.uk/" title="EMBL-EBI">EMBL-EBI</a></h3>
+                </div>
+
+                <div class="grid_4">
+                    <h3 class="services"><a href="//www.ebi.ac.uk/services">Services</a></h3>
+                </div>
+
+                <div class="grid_4">
+                    <h3 class="research"><a href="//www.ebi.ac.uk/research">Research</a></h3>
+                </div>
+
+                <div class="grid_4">
+                    <h3 class="training"><a href="//www.ebi.ac.uk/training">Training</a></h3>
+                </div>
+
+                <div class="grid_4">
+                    <h3 class="industry"><a href="//www.ebi.ac.uk/industry">Industry</a></h3>
+                </div>
+
+                <div class="grid_4 omega">
+                    <h3 class="about"><a href="//www.ebi.ac.uk/about">About us</a></h3>
+                </div>
+
+            </nav>
+
+            <section id="ebi-footer-meta">
+                <p class="address">EMBL-EBI, Wellcome Trust Genome Campus, Hinxton, Cambridgeshire, CB10 1SD, UK &nbsp; &nbsp; +44 (0)1223 49 44 44</p>
+                <p class="legal">Copyright &copy; EMBL-EBI 2013 | EBI is an outstation of the <a href="http://www.embl.org">European Molecular Biology Laboratory</a> | <a href="/about/privacy">Privacy</a> | <a href="/about/cookies">Cookies</a> | <a href="/about/terms-of-use">Terms of use</a></p>
+            </section>
+
+        </div>
+
+    </footer>
+</div> <!--! end of #wrapper -->
+
+
+<!-- JavaScript at the bottom for fast page loading -->
+
+<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+-->
+
+
+<!-- Your custom JavaScript file scan go here... change names accordingly -->
+<!--
+<script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/plugins.js"></script>
+<script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/script.js"></script>
+-->
+<script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
+<script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="scripts/namespaces.js"></script>
+<script type="text/javascript" src="scripts/queries.js"></script>
+<script type="text/javascript" src="scripts/lode.js"></script>
+<!--<script type="text/javascript" src="scripts/thickbox.js"></script>-->
+<!-- end scripts-->
+
+<!-- Google Analytics details... -->
+<!-- Change UA-XXXXX-X to be your site's ID -->
+<script type="text/javascript">
+    var gaJsHost = (("https:" ==  document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript  src='" + gaJsHost + "google-analytics.com/ga.js'  type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try{
+        var pageTracker = _gat._getTracker("UA-35314047-1");
+        pageTracker._trackPageview();
+    } catch(err) {}</script>
+
+
+<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+chromium.org/developers/how-tos/chrome-frame-getting-started -->
+<!--[if lt IE 7 ]>
+<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<![endif]-->
+
+</body>
+</html>
+
