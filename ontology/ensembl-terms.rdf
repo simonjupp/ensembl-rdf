@@ -1,0 +1,321 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY terms "http://purl.org/dc/terms/" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY obo "http://purl.obolibrary.org/obo/" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY ensembl "http://rdf.ebi.ac.uk/terms/ensembl/" >
+    <!ENTITY skos "http://www.w3.org/2004/02/skos/core#" >
+    <!ENTITY resource "http://semanticscience.org/resource/" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY faldo "http://biohackathon.org/resource/faldo#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://rdf.ebi.ac.uk/terms/ensembl#"
+     xml:base="http://rdf.ebi.ac.uk/terms/ensembl"
+     xmlns:obo="http://purl.obolibrary.org/obo/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:terms="http://purl.org/dc/terms/"
+     xmlns:ensembl="http://rdf.ebi.ac.uk/terms/ensembl/"
+     xmlns:resource="http://semanticscience.org/resource/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+     xmlns:faldo="http://biohackathon.org/resource/faldo#">
+    <owl:Ontology rdf:about="http://rdf.ebi.ac.uk/terms/ensembl"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:AnnotationProperty rdf:about="&terms;description"/>
+    <owl:AnnotationProperty rdf:about="&skos;altLabel"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://biohackathon.org/resource/faldo#begin -->
+
+    <owl:ObjectProperty rdf:about="&faldo;begin"/>
+    
+
+
+    <!-- http://biohackathon.org/resource/faldo#end -->
+
+    <owl:ObjectProperty rdf:about="&faldo;end"/>
+    
+
+
+    <!-- http://biohackathon.org/resource/faldo#location -->
+
+    <owl:ObjectProperty rdf:about="&faldo;location"/>
+    
+
+
+    <!-- http://biohackathon.org/resource/faldo#reference -->
+
+    <owl:ObjectProperty rdf:about="&faldo;reference"/>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/RO_0002162 -->
+
+    <owl:ObjectProperty rdf:about="&obo;RO_0002162">
+        <rdfs:label xml:lang="en">in taxon</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://semanticscience.org/resource/SIO_000053 -->
+
+    <owl:ObjectProperty rdf:about="&resource;SIO_000053"/>
+    
+
+
+    <!-- http://semanticscience.org/resource/SIO_000093 -->
+
+    <owl:ObjectProperty rdf:about="&resource;SIO_000093"/>
+    
+
+
+    <!-- http://semanticscience.org/resource/SIO_000628 -->
+
+    <owl:ObjectProperty rdf:about="&resource;SIO_000628"/>
+    
+
+
+    <!-- http://semanticscience.org/resource/SIO_000974 -->
+
+    <owl:ObjectProperty rdf:about="&resource;SIO_000974"/>
+    
+
+
+    <!-- http://semanticscience.org/resource/SIO_010080 -->
+
+    <owl:ObjectProperty rdf:about="&resource;SIO_010080"/>
+    
+
+
+    <!-- http://semanticscience.org/resource/SIO_010081 -->
+
+    <owl:ObjectProperty rdf:about="&resource;SIO_010081"/>
+    
+
+
+    <!-- http://semanticscience.org/resource/SIO_010082 -->
+
+    <owl:ObjectProperty rdf:about="&resource;SIO_010082"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://semanticscience.org/resource/SIO_000300 -->
+
+    <owl:DatatypeProperty rdf:about="&resource;SIO_000300"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://biohackathon.org/resource/faldo#Region -->
+
+    <owl:Class rdf:about="&faldo;Region">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&faldo;end"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&faldo;reference"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&faldo;begin"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://identifiers.org/taxonomy/9606 -->
+
+    <owl:Class rdf:about="http://identifiers.org/taxonomy/9606">
+        <rdfs:subClassOf rdf:resource="&obo;OBI_0100026"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/OBI_0100026 -->
+
+    <owl:Class rdf:about="&obo;OBI_0100026">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <skos:altLabel>OBI organism</skos:altLabel>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0000010 -->
+
+    <owl:Class rdf:about="&obo;SO_0000010">
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&resource;SIO_010080"/>
+                <owl:allValuesFrom rdf:resource="&obo;SO_0000673"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <skos:altLabel>SO protein coding gene</skos:altLabel>
+        <terms:description>A region (or regions) that includes all of the sequence elements necessary to encode a functional transcript that may be translated into a polypeptide sequence. A gene may include regulatory regions, transcribed regions and/or other functional sequence regions.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0000104 -->
+
+    <owl:Class rdf:about="&obo;SO_0000104">
+        <skos:altLabel>polypeptide</skos:altLabel>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0000147 -->
+
+    <owl:Class rdf:about="&obo;SO_0000147">
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <skos:altLabel>SO exon</skos:altLabel>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0000340 -->
+
+    <owl:Class rdf:about="&obo;SO_0000340">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&obo;RO_0002162"/>
+                <owl:someValuesFrom rdf:resource="&obo;OBI_0100026"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <skos:altLabel xml:lang="en">SO chromosome</skos:altLabel>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0000673 -->
+
+    <owl:Class rdf:about="&obo;SO_0000673">
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&resource;SIO_010082"/>
+                <owl:someValuesFrom rdf:resource="&obo;SO_0000104"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&resource;SIO_000053"/>
+                <owl:allValuesFrom rdf:resource="&obo;SO_0000147"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <skos:altLabel>SO transcript</skos:altLabel>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/EnsemblFeature -->
+
+    <owl:Class rdf:about="&ensembl;EnsemblFeature">
+        <rdfs:label xml:lang="en">Ensembl genomic feature</rdfs:label>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&faldo;location"/>
+                <owl:someValuesFrom rdf:resource="&faldo;Region"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&obo;RO_0002162"/>
+                <owl:someValuesFrom rdf:resource="&obo;OBI_0100026"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/nonsense_mediated_decay -->
+
+    <owl:Class rdf:about="&ensembl;nonsense_mediated_decay">
+        <rdfs:label>nonsense mediated decay</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/retained_intron -->
+
+    <owl:Class rdf:about="&ensembl;retained_intron">
+        <rdfs:label>retained intron</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+    </owl:Class>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.2.3.1824) http://owlapi.sourceforge.net -->
+

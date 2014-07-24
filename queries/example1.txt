@@ -1,0 +1,108 @@
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix faldo: <http://biohackathon.org/resource/faldo#>
+prefix ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>
+
+select *  {
+ensembl:ENSG00000139618 rdfs:subClassOf ?type ;
+     faldo:location ?location .
+
+?location faldo:begin ?begin .
+?location faldo:end ?end .
+?begin faldo:reference ?reference . 
+}
+
+
+GET feature/id/:id
+Uses the given identifier as a way of indicating the Slice of features required. All returned features will overlap the given feature
+
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix faldo: <http://biohackathon.org/resource/faldo#>
+prefix ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>
+prefix dc: <http://purl.org/dc/terms/>
+prefix taxon: <http://identifiers.org/taxonomy/>
+
+select distinct ?id ?label ?type ?desc  {
+
+GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/75> {
+
+   ensembl:ENSG000001577644 faldo:location ?location ;
+                           obo:RO_0002162 taxon:9606 .
+   ?location faldo:begin [faldo:position ?begin] .
+   ?location faldo:end [faldo:position ?end ] . 
+   ?location faldo:reference ?reference . 
+   
+   ?gene rdfs:subClassOf ?type ;
+           obo:RO_0002162 taxon:9606 ;
+	   rdfs:label ?label ;
+	   dc:description ?desc ;
+   	   dc:identifier ?id ;
+   	   faldo:location ?location2 .
+   ?location2 faldo:begin [faldo:position ?begin2] .
+   ?location2 faldo:end [faldo:position ?end2 ] .  
+   ?location2 faldo:reference ?reference . 
+   filter (?begin2 >= ?begin && ?begin2 <= ?end)
+ }
+}
+limit 10
+
+
+# get features within a location 
+
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix faldo: <http://biohackathon.org/resource/faldo#>
+prefix ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>
+prefix dc: <http://purl.org/dc/terms/>
+prefix taxon: <http://identifiers.org/taxonomy/>
+
+select distinct ?id ?label ?type ?desc ?reference ?begin ?end {
+
+GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/75> {
+
+   ensembl:ENSG00000139618 rdfs:subClassOf ?type ;
+           rdfs:label ?label ;
+	   dc:description ?desc ;
+   	   dc:identifier ?id ;
+          faldo:location ?location ;
+          obo:RO_0002162 taxon:9606 .
+   ?location faldo:begin [faldo:position ?begin] .
+   ?location faldo:end [faldo:position ?end ] . 
+   ?location faldo:reference ?reference . 
+   
+ }
+}
+limit 10
+
+####
+
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix obo: <http://purl.obolibrary.org/obo/>
+prefix faldo: <http://biohackathon.org/resource/faldo#>
+prefix ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>
+prefix dc: <http://purl.org/dc/terms/>
+prefix taxon: <http://identifiers.org/taxonomy/>
+
+select distinct ?id ?label ?type ?typelabel ?desc ?reference ?begin ?end {
+
+?g  <http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf> <http://rdf.ebi.ac.uk/dataset/ensembl/75> .
+GRAPH ?g {
+
+   ?gene rdfs:subClassOf ?type ;
+           rdfs:label ?label ;
+	   dc:description ?desc ;
+   	   dc:identifier ?id ;
+          faldo:location ?location ;
+          obo:RO_0002162 taxon:9606 .
+   ?location faldo:begin [faldo:position ?begin] .
+   ?location faldo:end [faldo:position ?end ] . 
+   ?location faldo:reference ?reference . 
+ 
+   filter (?begin >= 200865 && ?end <= 257589 )
+
+ }
+
+   ?type rdfs:label ?typelabel .
+
+}

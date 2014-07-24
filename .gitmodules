@@ -1,0 +1,3 @@
+[submodule "lodestar-ui"]
+	path = lodestar-ui
+	url = https://github.com/EBISPOT/lodestar.git
