@@ -172,7 +172,7 @@ if ($virtgraph) {
     print GRAPH $graphUri;
     close GRAPH;
     # make the species graph a subgraph of the version graph
-    triple (u($graphUri), '<http://rdfs.org/ns/void#subset>', u($versionGraphUri)); 
+    triple (u($graphUri), '<http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf>', u($versionGraphUri)); 
 }
 
 # start to process all genes
