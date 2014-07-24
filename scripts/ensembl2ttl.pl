@@ -126,6 +126,7 @@ foreach (keys %prefix) {
 # Choice of database host is a factor in how fast the script runs. Try to find your nearest mirror, and check the database version before running.
 Bio::EnsEMBL::Registry->load_registry_from_db(
   -host => 'mysql-ensembl-mirror.ebi.ac.uk',
+#  -host => 'ensembldb.ensembl.org',
   -user => 'anonymous',
   -port => 4240,
   -db_version => $version,
@@ -171,11 +172,12 @@ if ($virtgraph) {
     print GRAPH $graphUri;
     close GRAPH;
     # make the species graph a subgraph of the version graph
-    triple (u($graphUri), '<http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf>', u($versionGraphUri)); 
+    triple (u($graphUri), '<http://rdfs.org/ns/void#subset>', u($versionGraphUri)); 
 }
 
 # start to process all genes
-#my $gene = $ga->fetch_by_stable_id('ENSG00000139618');
+#my $gene = $ga->fetch_by_stable_id('ENSG00000189167');
+# dump all features#
 while (my $gene = shift @$genes) {
   $count++;
 
@@ -190,13 +192,10 @@ while (my $gene = shift @$genes) {
   # create the gene as a sublclass of the type coming back from SO, usually protein coding. 
   triple('ensembl:'.$gene->stable_id, 'rdfs:subClassOf', $ontoTypeId );
 
-  # dump all features
   dump_feature($gene);
 
   # add some useful meta data
   triple('ensembl:'.$gene->stable_id, 'rdfs:label', ($gene->external_name)? '"'.$gene->external_name.'"':'"'.$gene->display_id.'"' );
-
-  # we will get all synonyms as mappings using the mapings script
   triple('ensembl:'.$gene->stable_id, 'dc:description', '"'.$gene->description.'"');
   dump_synonyms($gene);
   
@@ -210,8 +209,7 @@ while (my $gene = shift @$genes) {
       taxonTriple('ensembl:'.$transcript->stable_id);
       
       # type the transcript using SO again
-      my $transcriptTypeId = getSOOntologyId($transcript->biotype());
-      triple( 'ensembl:'.$transcript->stable_id, 'rdfs:subClassOf', $transcriptTypeId);
+      triple( 'ensembl:'.$transcript->stable_id, 'rdfs:subClassOf', 'obo:SO_0000673');
       triple( 'ensembl:'.$transcript->stable_id, 'dc:identifier', '"'.$transcript->stable_id.'"');
       triple( 'ensembl:'.$transcript->stable_id, 'rdfs:label', ($transcript->external_name)? '"'.$transcript->external_name.'"':'"'.$transcript->display_id.'"');
 
@@ -231,9 +229,9 @@ while (my $gene = shift @$genes) {
       # get the exons for the transcript
       my @exons = @{$transcript->get_all_Exons};
       # make all in the same strand
-      if ($transcript->strand == -1) {
-	  @exons = reverse @exons;
-      }
+      #if ($transcript->strand == -1) {
+	#  @exons = reverse @exons;
+      #}
       my $position = 1;
       # Assert Exon bag for a given transcript, exons are ordered by position on the transcript.
       foreach my $exon (@exons) {
@@ -297,8 +295,8 @@ sub dump_feature {
 	    triple(u($non_version_url), 'rdfs:subClassOf', 'term:'.$cs->name);
 	    triple('term:'.$cs->name, 'rdfs:subClassOf', 'term:EnsemblRegion');
 	}
-	triple(u($non_version_url), 'rdfs:label', '"'.$cs->name.' '.$feature->seq_region_name.'"');	
-	triple($reference, 'rdfs:label', '"'.$cs->name.' '.$feature->seq_region_name.'"');	
+	triple(u($non_version_url), 'rdfs:label', '"'.${species}.' '.$cs->name.' '.$feature->seq_region_name.'"');	
+	triple($reference, 'rdfs:label', '"'.${species}.' '.$cs->name.' '.$feature->seq_region_name.' ('.$cs->version.')"');	
 	triple($reference, 'dc:identifier', '"'.$feature->seq_region_name.'"');	
 	triple($reference, 'term:inEnsemblSchemaNumber', '"'.$schemaVersion.'"');	
 	triple($reference, 'term:inEnsemblAssembly', '"'.$cs->version.'"');	
@@ -310,24 +308,28 @@ sub dump_feature {
 
     # implement the FALDO model:  A semantic standard for describing the location of nucleotide and protein feature annotation
     # dx.doi.org/10.1101/002121
-    my $location = u($version_url.':'.$feature->start.'-'.$feature->end.':'.$feature->strand);
-    my $begin = u($version_url.':'.$feature->start.':'.$feature->strand);
-    my $end = u($version_url.':'.$feature->end.':'.$feature->strand);
+    my $begin = ($feature->strand == 1) ? $feature->start : $feature->end;
+    my $end = ($feature->strand == 1) ? $feature->end : $feature->start;
+    my $location = u($version_url.':'.$begin.'-'.$end.':'.$feature->strand);
+    my $beginUri = u($version_url.':'.$begin.':'.$feature->strand);
+    my $endUri = u($version_url.':'.$end.':'.$feature->strand);
     triple('ensembl:'.$feature->stable_id, 'faldo:location', $location);
-    triple($location, 'rdfs:label', '"'.$cs->name.' '.$feature->seq_region_name.':'.$feature->start.'-'.$feature->end.':'.$feature->strand.'"');
+    triple($location, 'rdfs:label', '"'.$cs->name.' '.$feature->seq_region_name.':'.$begin.'-'.$end.':'.$feature->strand.'"');
     triple($location, 'rdf:type', 'faldo:Region');
-    triple($location, 'faldo:begin', $begin);
-    triple($location, 'faldo:end', $end);
+    triple($location, 'faldo:begin', $beginUri);
+    triple($location, 'faldo:end', $endUri);
     triple($location, 'faldo:reference', $reference);
-    triple($begin, 'rdf:type', 'faldo:ExactPosition');
-    triple($begin, 'rdf:type', ($feature->strand == 1)? 'faldo:ForwardStrandPosition':'faldo:ReverseStrandPosition');
-    triple($begin, 'faldo:position', ($feature->strand == 1) ? $feature->start : $feature->end);
-    triple($begin, 'faldo:reference', $reference);
+    triple($beginUri, 'rdf:type', 'faldo:ExactPosition');
+    triple($beginUri, 'rdf:type', ($feature->strand == 1)? 'faldo:ForwardStrandPosition':'faldo:ReverseStrandPosition');
+#    triple($beginUri, 'faldo:position', ($feature->strand == 1) ? $feature->start : $feature->end);
+    triple($beginUri, 'faldo:position', $begin);
+    triple($beginUri, 'faldo:reference', $reference);
 
-    triple($end, 'rdf:type', 'faldo:ExactPosition');
-    triple($end, 'rdf:type', ($feature->strand == 1)? 'faldo:ForwardStrandPosition':'faldo:ReverseStrandPosition');
-    triple($end, 'faldo:position', ($feature->strand == 1) ? $feature->end : $feature->start);
-    triple($end, 'faldo:reference', $reference);
+    triple($endUri, 'rdf:type', 'faldo:ExactPosition');
+    triple($endUri, 'rdf:type', ($feature->strand == 1)? 'faldo:ForwardStrandPosition':'faldo:ReverseStrandPosition');
+#    triple($endUri, 'faldo:position', ($feature->strand == 1) ? $feature->end : $feature->start);
+    triple($endUri, 'faldo:position', $end);
+    triple($endUri, 'faldo:reference', $reference);
 
     triple('ensembl:'.$feature->stable_id, 'dc:identifier', '"'.$feature->stable_id.'"' );
 }

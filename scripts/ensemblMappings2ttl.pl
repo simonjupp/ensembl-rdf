@@ -113,7 +113,7 @@ if ($virtgraph) {
     print GRAPH $graphUri;
     close GRAPH;
     # make the species graph a subgraph of the version graph
-    triple (u($graphUri), '<http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf>', u($versionGraphUri)); 
+    triple (u($graphUri), '<http://rdfs.org/ns/void#subset>', u($versionGraphUri)); 
 }
 
 
@@ -201,14 +201,16 @@ sub print_DBEntries
 	my $desc = $dbe->description();
 
 	my $ensemblUri = $prefix{ensembl}.$ensId; 
-	my $relation = $prefix{ensembl}.$dbe->info_type(); 
+	my $relation = $prefix{term}.$dbe->info_type(); 
 	$relations{$relation}=1;
 
 	if (!$ensemblSources{$name}) {
 	    $ensemblSources{$name}{$relation} = $id;
+	    triple(u($relation), 'rdfs:subPropertyOf', 'skos:related');
 	}
 	elsif (!$ensemblSources{$name}{$relation}) {
 	    $ensemblSources{$name}{$relation} = $id;
+	    triple(u($relation), 'rdfs:subPropertyOf', 'skos:related');
 	}
 
 	my $xrefUri;
@@ -230,9 +232,13 @@ sub print_DBEntries
 	
 	if ($dbname2type{$name}) {
 	    $xrefTypeUri = $dbname2type{$name};
+	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'ensembl:EnsemblDBEntry');
+	    triple(u($xrefTypeUri), 'rdfs:label', '"'.$name.'"');
 	}
 	else {
-	    $xrefTypeUri = $prefix{ensembl}.$name;	    
+	    $xrefTypeUri = $prefix{term}.$name;	    
+	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'ensembl:EnsemblDBEntry');
+	    triple(u($xrefTypeUri), 'rdfs:label', '"'.$name.'"');
 	}
 	
 	triple(u($ensemblUri), u($relation), u($xrefUri));
@@ -242,8 +248,6 @@ sub print_DBEntries
 
 	# type the xref
 	triple(u($xrefUri), 'rdfs:subClassOf', u($xrefTypeUri));
-	triple(u($xrefTypeUri), 'rdfs:subClassOf', 'ensembl:EnsemblDBEntry');
-	triple(u($xrefTypeUri), 'rdfs:label', '"'.$name.'"');
 	
     }
 }
