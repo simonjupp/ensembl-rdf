@@ -39,24 +39,31 @@ var exampleQueries = [
         shortname : "Query 2",
         description: "Show ordered exons with their length for transcript ENST00000380152",
         query:
-            "# calculate exon length inline\n" +
-            "SELECT DISTINCT ?exon ?id ?typeLabel ?referenceLabel ?begin ?end ( (?end - ?begin) AS ?length) {\n\n" +
+            "SELECT DISTINCT ?exon ?id ?referenceLabel ?begin ?end ?strand {\n\n" +
             " # query human data only\n" +
             " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/75/9606> {\n" +
             "   ensembl:ENST00000380152 obo:SO_has_part ?exon;\n" +
-            "                           rdfs:subClassOf ?type;\n" +
-            "                           dcterms:identifier ?id .\n" +
+            "                           sio:SIO_000974 ?orderedPart .\n" +
+            "   ?exon dcterms:identifier ?id .\n" +
+            "   # we include an explicit exon order\n" +
+            "   # so that we can order correctly in both + and - strand \n" +
+            "   ?orderedPart sio:SIO_000628 ?exon .\n" +
+            "   ?orderedPart sio:SIO_000300 ?order .\n\n" +
             "   OPTIONAL {\n" +
             "     ?exon faldo:location ?location .\n" +
-            "     ?location faldo:begin [faldo:position ?begin] .\n" +
-            "     ?location faldo:end [faldo:position ?end ] .\n" +
+            "     ?location faldo:begin\n" +
+            "        [a ?strand ;\n" +
+            "           faldo:position ?begin] .\n" +
+            "     ?location faldo:end\n" +
+            "        [a ?strand ;\n" +
+            "           faldo:position ?end] .\n" +
             "     ?location faldo:reference ?reference .\n" +
             "     ?reference rdfs:label ?referenceLabel\n" +
             "   }\n" +
             " }\n" +
-            "OPTIONAL {?type rdfs:label ?typeLabel} .\n" +
+            "FILTER (?strand != faldo:ExactPosition)\n" +
             "}\n" +
-            "ORDER BY ASC(?begin)"
+            "ORDER BY ASC(?order)"
      },
     {
         shortname : "Query 3",
@@ -171,8 +178,9 @@ var exampleQueries = [
         query: "# all species data are loaded into different named graphs\n" +
                "# ontologies are also place in their own graph\n" +
                "# this query shows all the graphs available\n\n" +
-               "SELECT ?g WHERE {\n" +
+               "SELECT ?g ?title WHERE {\n" +
                "?g <http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf> <http://rdf.ebi.ac.uk/dataset/ensembl/75> . \n" +
+               "?g dcterms:title ?title . \n" +
                "}"
     }
 

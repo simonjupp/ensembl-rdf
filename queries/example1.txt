@@ -83,7 +83,7 @@ prefix faldo: <http://biohackathon.org/resource/faldo#>
 prefix ensembl: <http://rdf.ebi.ac.uk/resource/ensembl/>
 prefix dc: <http://purl.org/dc/terms/>
 prefix taxon: <http://identifiers.org/taxonomy/>
-
+prefix rdfg: <http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf>
 select distinct ?id ?label ?type ?typelabel ?desc ?reference ?begin ?end {
 
 ?g  <http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf> <http://rdf.ebi.ac.uk/dataset/ensembl/75> .
@@ -100,9 +100,6 @@ GRAPH ?g {
    ?location faldo:reference ?reference . 
  
    filter (?begin >= 200865 && ?end <= 257589 )
-
  }
-
    ?type rdfs:label ?typelabel .
-
 }
