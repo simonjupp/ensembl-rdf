@@ -124,14 +124,14 @@ foreach (keys %prefix) {
 }
 
 # Choice of database host is a factor in how fast the script runs. Try to find your nearest mirror, and check the database version before running.
-Bio::EnsEMBL::Registry->load_registry_from_db(
+Bio::EnsEMBL::Registry->load_registry_from_db()
   -host => 'mysql-ensembl-mirror.ebi.ac.uk',
 #  -host => 'ensembldb.ensembl.org',
   -user => 'anonymous',
   -port => 4240,
   -db_version => $version,
   -no_cache => 1,
-);
+;
 
 
 my $ga = Bio::EnsEMBL::Registry->get_adaptor($species,'Core','Gene');

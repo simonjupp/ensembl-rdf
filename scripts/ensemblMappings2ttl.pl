@@ -82,9 +82,11 @@ foreach (keys %prefix) {
 
 # Choice of database host is a factor in how fast the script runs. Try to find your nearest mirror, and check the database version before running.
 Bio::EnsEMBL::Registry->load_registry_from_db(
-  -host => 'ensembldb.ensembl.org',
+  -host => 'mysql-ensembl-mirror.ebi.ac.uk',
+#  -host => 'ensembldb.ensembl.org',
   -user => 'anonymous',
-  -db_version => 75,
+  -port => 4240,
+  -db_version => $version,
   -no_cache => 1,
 );
 
@@ -232,12 +234,12 @@ sub print_DBEntries
 	
 	if ($dbname2type{$name}) {
 	    $xrefTypeUri = $dbname2type{$name};
-	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'ensembl:EnsemblDBEntry');
+	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'term:EnsemblDBEntry');
 	    triple(u($xrefTypeUri), 'rdfs:label', '"'.$name.'"');
 	}
 	else {
 	    $xrefTypeUri = $prefix{term}.$name;	    
-	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'ensembl:EnsemblDBEntry');
+	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'term:EnsemblDBEntry');
 	    triple(u($xrefTypeUri), 'rdfs:label', '"'.$name.'"');
 	}
 	

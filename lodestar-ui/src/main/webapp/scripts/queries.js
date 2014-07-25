@@ -85,7 +85,9 @@ var exampleQueries = [
     {
         shortname : "Query 4",
         description: "Show all external database cross references for gene ENSG00000139618",
-        query:           "SELECT DISTINCT ?id ?xrefRelationType ?xrefLabel ?xrefUri ?xrefType ?xrefLabel {\n" +
+
+        query:           "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                         "SELECT DISTINCT ?id ?xrefRelationType ?xrefLabel ?xrefUri ?xrefType ?xrefLabel {\n" +
                          " # query human data only\n" +
                          " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/75/9606> {\n" +
                          "  {\n" +
@@ -99,7 +101,7 @@ var exampleQueries = [
                          "           ?xrefRelationType ?xrefUri .\n" +
                          "  ?xrefUri rdfs:subClassOf ?xrefType ;\n" +
                          "           rdfs:label ?xrefLabel .\n" +
-                         "  ?xrefType rdfs:subClassOf* ensembl:EnsemblDBEntry .\n" +
+                         "  ?xrefRelationType rdfs:subPropertyOf skos:related .\n" +
                          " }\n" +
                          "}\n"
     },
