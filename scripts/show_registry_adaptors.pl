@@ -3,7 +3,8 @@ use Bio::EnsEMBL::Registry;
 my $registry = 'Bio::EnsEMBL::Registry';
 
 $registry->load_registry_from_db(
-    -host => 'ensembldb.ensembl.org', # alternatively 'useastdb.ensembl.org'
+    -host => 'mysql-eg-publicsql.ebi.ac.uk', # ensembldb.ensembl.orgalternatively 'useastdb.ensembl.org'
+    -port => 4157,
     -user => 'anonymous'
     );
 

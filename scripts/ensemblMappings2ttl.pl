@@ -87,12 +87,16 @@ Bio::EnsEMBL::Registry->load_registry_from_db(
   -user => 'anonymous',
   -port => 4240,
   -db_version => $version,
-  -no_cache => 1,
+#  -no_cache => 1,
 );
 
 my $ga = Bio::EnsEMBL::Registry->get_adaptor($species,'Core','Gene');
 
 my $meta = Bio::EnsEMBL::Registry->get_adaptor($species,'Core','MetaContainer');
+
+my $pfa = Bio::EnsEMBL::Registry->get_adaptor($species,"funcgen","ProbeFeature");
+my $aa = Bio::EnsEMBL::Registry->get_adaptor($species,"funcgen","Array");
+my $pba = Bio::EnsEMBL::Registry->get_adaptor($species,"funcgen","ProbeSet");
 
 # create a map of taxon id to species name, we will create some triples for these at the end
 
@@ -152,24 +156,27 @@ close DBNAME;
 
 my %relations;
 my %ensemblSources;
-my $genes = $ga->fetch_all();
-
+#my $genes = $ga->fetch_all();
+my $gene = $ga->fetch_by_stable_id ('ENSG00000105393');
 #print "GENE ", $gene->stable_id(), "\n";
 my $count = 0;
-while (my $gene = shift @$genes) {
+#while (my $gene = shift @$genes) {
     $count++;
     print_DBEntries( $gene->get_all_DBEntries() , $gene->stable_id());
     
     foreach my $transcript ( @{ $gene->get_all_Transcripts() } ) {
+	print_DBEntries( $transcript->get_all_DBEntries() , $gene->stable_id(), 'http://rdf.ebi.ac.uk/terms/ensembl/INFERRED_FROM_TRANSCRIPT');
 	print_DBEntries( $transcript->get_all_DBEntries() , $transcript->stable_id());
+#	print_Probe_Features ($transcript);
 	
 	if ( defined $transcript->translation() ) {
 	    my $translation = $transcript->translation();
+	    print_DBEntries( $translation->get_all_DBEntries() , $gene->stable_id(), 'http://rdf.ebi.ac.uk/terms/ensembl/INFERRED_FROM_TRANSLATION');
 	    print_DBEntries( $translation->get_all_DBEntries(), $translation->stable_id() );
 	}
     }
-  last if ($limit && $count == $limit);
-}
+#  last if ($limit && $count == $limit);
+#}
 
 # print relation assertions as sub property of skos:related
 open RELOUT, ">${path}${species}_xref_relations.txt" || die "can't open ${species} xref relations\n";
@@ -186,6 +193,27 @@ while ( my ($key, $relhash) = each(%ensemblSources) ) {
     }
 }
 
+sub print_Probe_Features {
+    my $transcript = shift;
+    
+    my @probesets = @{$pba->fetch_all_by_external_name($transcript->stable_id)};
+
+    foreach my $probeset (@probesets){
+	
+	my $arrays_string = "";
+	foreach my $array (@{$probeset->get_all_Arrays}) {
+	    
+	    print "probeset name: " . $probeset->name . "\n";
+	    print "array desc: " . $array->description . "\n";
+	    print "array name: " . $array->name . "\n";
+	    print "array vendor: " . $array->vendor . "\n";
+	    print "array type: " . $array->type . "\n";
+	    $arrays_string .= $array->name;
+	    
+	}
+    }
+}
+
 close RELOUT;
 close SRCOUT;
 
@@ -193,6 +221,8 @@ sub print_DBEntries
 {
     my $db_entries = shift;
     my $ensId = shift;
+    my $rel = shift;
+    
     foreach my $dbe ( @{$db_entries} ) {
 
 	#printf "\tXREF %s (db:%s) (id:%s) (desc:%s) (enstype:%s) (exttype:%s) (evidence:%s) (linkage:%s)\n",
@@ -204,6 +234,9 @@ sub print_DBEntries
 
 	my $ensemblUri = $prefix{ensembl}.$ensId; 
 	my $relation = $prefix{term}.$dbe->info_type(); 
+	if ($rel) {
+	    $relation = $rel;
+	}
 	$relations{$relation}=1;
 
 	if (!$ensemblSources{$name}) {

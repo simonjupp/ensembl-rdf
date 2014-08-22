@@ -114,7 +114,7 @@ my %prefix = (
   rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
   faldo => 'http://biohackathon.org/resource/faldo#',
   obo => 'http://purl.obolibrary.org/obo/',
-  skos => 'http://www.w3.org/2004/02/skos/core#',
+  identifiers => 'http://identifiers.org/',
   taxon => 'http://identifiers.org/taxonomy/',
 );
 
@@ -124,20 +124,24 @@ foreach (keys %prefix) {
 }
 
 # Choice of database host is a factor in how fast the script runs. Try to find your nearest mirror, and check the database version before running.
-Bio::EnsEMBL::Registry->load_registry_from_db()
-  -host => 'mysql-ensembl-mirror.ebi.ac.uk',
-#  -host => 'ensembldb.ensembl.org',
+Bio::EnsEMBL::Registry->load_registry_from_db(
+#  -host => 'mysql-ensembl-mirror.ebi.ac.uk',
+  -host => 'ensembldb.ensembl.org',
   -user => 'anonymous',
-  -port => 4240,
+#  -port => 4240,
   -db_version => $version,
-  -no_cache => 1,
-;
+);
 
-
+# Get all db adaptors
 my $ga = Bio::EnsEMBL::Registry->get_adaptor($species,'Core','Gene');
 
 my $ontoa =
     Bio::EnsEMBL::Registry->get_adaptor( 'Multi', 'Ontology', 'OntologyTerm' );
+
+my $db_entry_adaptor =
+    Bio::EnsEMBL::Registry->get_adaptor( 'Human', 'Core', 'DBEntry' );
+
+my $meta = Bio::EnsEMBL::Registry->get_adaptor($species,'Core','MetaContainer');
 
 # get all genes
 my $genes = $ga->fetch_all();
@@ -148,7 +152,6 @@ my %term2ontologyId;
 # simple count for testing
 my $count = 0;
 
-my $meta = Bio::EnsEMBL::Registry->get_adaptor($species,'Core','MetaContainer');
 
 # create a map of taxon id to species name, we will create some triples for these at the end
 
@@ -176,11 +179,14 @@ if ($virtgraph) {
 }
 
 # start to process all genes
-#my $gene = $ga->fetch_by_stable_id('ENSG00000189167');
+my $gene = $ga->fetch_by_stable_id('ENSG00000105393');
 # dump all features#
-while (my $gene = shift @$genes) {
+#while (my $gene = shift @$genes) {
+
   $count++;
 
+# add karyoptype for the gene
+dump_karyotype($gene);
   # get all the trancripts for this gene
   my @trans = @{$gene->get_all_Transcripts};
 
@@ -192,11 +198,12 @@ while (my $gene = shift @$genes) {
   # create the gene as a sublclass of the type coming back from SO, usually protein coding. 
   triple('ensembl:'.$gene->stable_id, 'rdfs:subClassOf', $ontoTypeId );
 
-  dump_feature($gene);
-
   # add some useful meta data
   triple('ensembl:'.$gene->stable_id, 'rdfs:label', ($gene->external_name)? '"'.$gene->external_name.'"':'"'.$gene->display_id.'"' );
   triple('ensembl:'.$gene->stable_id, 'dc:description', '"'.$gene->description.'"');
+
+dump_identifers_mapping($gene);
+  dump_feature($gene);
   dump_synonyms($gene);
   
   # relate gene to its taxon
@@ -206,6 +213,8 @@ while (my $gene = shift @$genes) {
   foreach my $transcript (@trans) {
       # transcripts are transcribed from a gene 
       triple( 'ensembl:'.$transcript->stable_id, 'obo:SO_transcribed_from', 'ensembl:'.$gene->stable_id);
+dump_identifers_mapping($transcript);
+
       taxonTriple('ensembl:'.$transcript->stable_id);
       
       # type the transcript using SO again
@@ -223,6 +232,7 @@ while (my $gene = shift @$genes) {
 	  triple('ensembl:'.$trans->stable_id, 'rdfs:subClassOf', 'obo:SO_0000104');
 	  triple('ensembl:'.$trans->stable_id, 'dc:identifier', '"'.$trans->stable_id.'"' );
 	  triple('ensembl:'.$trans->stable_id, 'rdfs:label', '"'.$trans->display_id.'"');
+dump_identifers_mapping($trans);
 	  taxonTriple('ensembl:'.$trans->stable_id);
       }
       
@@ -240,7 +250,9 @@ while (my $gene = shift @$genes) {
 	  triple('ensembl:'.$exon->stable_id,'rdfs:subClassOf','obo:SO_0000147');
 	  triple('ensembl:'.$exon->stable_id,'dc:identifier', '"'.$exon->stable_id.'"');
 	  triple('ensembl:'.$exon->stable_id, 'rdfs:label', '"'.$exon->display_id.'"');
-	  taxonTriple('ensembl:'.$exon->stable_id);
+	  
+dump_identifers_mapping($exon);
+taxonTriple('ensembl:'.$exon->stable_id);
 
 	  # we assert that both the gene and the transcript have a part that is the exon
 	  # The exon can refer to both the part on the gene and the part on the transcript 
@@ -263,26 +275,56 @@ while (my $gene = shift @$genes) {
     triple('ensembl:'.$gene->stable_id, 'sio:SIO_000558', 'ensembl:'.$alt_gene->stable_id);
   }
   print STDERR ".";
-  last if ($limit && $count == $limit);
-}
+#  last if ($limit && $count == $limit);
+#}
 print "Dumped triples for $count genes \n";
 
 my %reference_hash;
 
+my %bandUris;
+sub dump_karyotype {
+    my $feature = shift;
+    my $slice = $feature->slice;
+    foreach my $band ( @{$slice->get_all_KaryotypeBands()} ) {
+	if ($feature->overlaps($band)) {
+	    my $stable_id = ${species}.'CytogeneticBand'.$slice->seq_region_name().$band->name();
+	    my $bandUri = $prefix{ensembl}.$stable_id;
+	    triple('ensembl:'.$feature->stable_id, 'sio:SIO_000061', u($bandUri));
+	    if (!$bandUris{$bandUri}) {
+		dump_feature($band, $stable_id);
+		triple(u($bandUri), 'rdf:type', u($prefix{term}.'CytogeneticBand'));	    
+		triple(u($bandUri), 'rdfs:label', '"'.${species}.' cytogenetic band '.$slice->seq_region_name().$band->name().'"');	    
+		$bandUris{$bandUri}  = 1;
+	    } 
+	}
+    }
+}
+
+sub dump_identifers_mapping {
+
+    my $feature = shift;
+    triple('ensembl:'.$feature->stable_id, 'rdfs:seeAlso', u($prefix{identifiers}.'ensembl/'.$feature->stable_id));
+	  
+}
+
 sub dump_feature {
     my $feature = shift;
-    
+    my $stable_id = shift;
+    if (!$stable_id) {
+	$stable_id = $feature->stable_id;
+    }
+
     my $slice = $feature->slice;
     my $region_name = $slice->seq_region_name;
     my $cs = $slice->coord_system;
-    
+        
     # generate a version specific portion of a URL that includes the database version, species, assembly version and region name
-    # e.g. The URI for human chromosme 1 in ensmebl 75 on assembly GRCh37 would be http://rdf.ebi.ac.uk/resource/ensembl/75/homo_sapiens/GRCh37/1
-    my $version_url = $prefix{ensembl}.$schemaVersion."/".$taxon_id. '/'.$cs->version.'/'.$feature->seq_region_name; 
-    
+    # e.g. The URI for human chromosme 1 in assembly GRCh37 would be http://rdf.ebi.ac.uk/resource/ensembl/75/GRCh37/1
+    my $version_url = $prefix{ensembl}.$schemaVersion.'/'.$cs->name.':'.$cs->version.':'.$feature->seq_region_name; 
+
     # we also create a non versioned URI that is a super class e.g. 
     # http://rdf.ebi.ac.uk/resource/ensembl/homo_sapiens/1
-    my $non_version_url = $prefix{ensembl}.$taxon_id.'/'.$feature->seq_region_name; 
+    my $non_version_url = $prefix{ensembl}.$taxon_id.'/'.$cs->name.':'.$feature->seq_region_name; 
 
     # these are typed as chromosome or patches e.g. HG991_PATCH
     my $reference = u($version_url);
@@ -300,6 +342,24 @@ sub dump_feature {
 	triple($reference, 'dc:identifier', '"'.$feature->seq_region_name.'"');	
 	triple($reference, 'term:inEnsemblSchemaNumber', '"'.$schemaVersion.'"');	
 	triple($reference, 'term:inEnsemblAssembly', '"'.$cs->version.'"');	
+	
+	# add mapping to INSDC and RefSeq
+	my @alternative_names = ( @{$slice->get_all_synonyms('INSDC')}, @{$slice->get_all_synonyms('RefSeq_genomic')});
+	for my $syn (@alternative_names) {
+	    my $exdbname = $db_entry_adaptor->get_db_name_from_external_db_id($syn->external_db_id);
+	    my $id = $syn->name;
+	    my $featureUri;
+	    if ($exdbname =~/insdc/i) {
+		$featureUri = $prefix{identifiers}.'insdc/'.$id;
+	    }
+	    else {
+		$featureUri = $prefix{identifiers}.'refseq/'.$id;
+	    }
+	    triple(u($featureUri), 'dc:identifier', '"'.$id.'"');
+	    triple($reference, 'sio:equivalentTo', u($featureUri));	
+	    taxonTriple(u($featureUri));
+	}
+	
 	taxonTriple($reference);
 	taxonTriple(u($non_version_url));
 
@@ -308,30 +368,30 @@ sub dump_feature {
 
     # implement the FALDO model:  A semantic standard for describing the location of nucleotide and protein feature annotation
     # dx.doi.org/10.1101/002121
-    my $begin = ($feature->strand == 1) ? $feature->start : $feature->end;
-    my $end = ($feature->strand == 1) ? $feature->end : $feature->start;
-    my $location = u($version_url.':'.$begin.'-'.$end.':'.$feature->strand);
+    my $begin = ($feature->strand >= 0) ? $feature->start : $feature->end;
+    my $end = ($feature->strand >= 0) ? $feature->end : $feature->start;
+    my $location = u($version_url.':'.$feature->start.'-'.$feature->end.':'.$feature->strand);
     my $beginUri = u($version_url.':'.$begin.':'.$feature->strand);
     my $endUri = u($version_url.':'.$end.':'.$feature->strand);
-    triple('ensembl:'.$feature->stable_id, 'faldo:location', $location);
-    triple($location, 'rdfs:label', '"'.$cs->name.' '.$feature->seq_region_name.':'.$begin.'-'.$end.':'.$feature->strand.'"');
+    triple('ensembl:'.$stable_id, 'faldo:location', $location);
+    triple($location, 'rdfs:label', '"'.$cs->name.' '.$feature->seq_region_name.':'.$feature->end.'-'.$feature->end.':'.$feature->strand.'"');
     triple($location, 'rdf:type', 'faldo:Region');
     triple($location, 'faldo:begin', $beginUri);
     triple($location, 'faldo:end', $endUri);
     triple($location, 'faldo:reference', $reference);
     triple($beginUri, 'rdf:type', 'faldo:ExactPosition');
-    triple($beginUri, 'rdf:type', ($feature->strand == 1)? 'faldo:ForwardStrandPosition':'faldo:ReverseStrandPosition');
+    triple($beginUri, 'rdf:type', ($feature->strand >= 0)? 'faldo:ForwardStrandPosition':'faldo:ReverseStrandPosition');
 #    triple($beginUri, 'faldo:position', ($feature->strand == 1) ? $feature->start : $feature->end);
     triple($beginUri, 'faldo:position', $begin);
     triple($beginUri, 'faldo:reference', $reference);
 
     triple($endUri, 'rdf:type', 'faldo:ExactPosition');
-    triple($endUri, 'rdf:type', ($feature->strand == 1)? 'faldo:ForwardStrandPosition':'faldo:ReverseStrandPosition');
+    triple($endUri, 'rdf:type', ($feature->strand >= 0)? 'faldo:ForwardStrandPosition':'faldo:ReverseStrandPosition');
 #    triple($endUri, 'faldo:position', ($feature->strand == 1) ? $feature->end : $feature->start);
     triple($endUri, 'faldo:position', $end);
     triple($endUri, 'faldo:reference', $reference);
 
-    triple('ensembl:'.$feature->stable_id, 'dc:identifier', '"'.$feature->stable_id.'"' );
+    triple('ensembl:'.$stable_id, 'dc:identifier', '"'.$stable_id.'"' );
 }
 
 sub dump_synonyms {
