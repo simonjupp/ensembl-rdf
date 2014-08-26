@@ -187,9 +187,9 @@ if ($virtgraph) {
 }
 
 # start to process all genes
-my $gene = $ga->fetch_by_stable_id('YKL095W');
+#my $gene = $ga->fetch_by_stable_id('YKL095W');
 # dump all features#
-#while (my $gene = shift @$genes) {
+while (my $gene = shift @$genes) {
 
   $count++;
   
@@ -284,7 +284,7 @@ my $gene = $ga->fetch_by_stable_id('YKL095W');
   }
   print STDERR ".";
   last if ($limit && $count == $limit);
-#}
+}
 print "Dumped triples for $count genes \n";
 
 my %reference_hash;
