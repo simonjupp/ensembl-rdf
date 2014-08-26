@@ -114,6 +114,7 @@ my %prefix = (
   rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
   faldo => 'http://biohackathon.org/resource/faldo#',
   obo => 'http://purl.obolibrary.org/obo/',
+  skos => 'http://www.w3.org/2004/02/skos/core#',
   identifiers => 'http://identifiers.org/',
   taxon => 'http://identifiers.org/taxonomy/',
 );
