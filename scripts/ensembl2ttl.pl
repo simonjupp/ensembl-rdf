@@ -77,6 +77,10 @@ my $virtgraph;
 my $man = 0;
 my $limit;
 my $help = 0;
+#"ensembldb.ensembl.org";
+my $host = "mysql-ensembl-mirror.ebi.ac.uk"; 
+my $port = "4240";
+my $genome = "";
 
 GetOptions (
     'species=s' => \$species,
@@ -85,6 +89,9 @@ GetOptions (
     'out=s' => \$path,
     'split=i' => \$split,
     'limit=i' => \$limit,
+    'host=s' => \$host,
+    'port=i' => \$port,
+    'genome=s' => \$genome,
     'help|?' => \$help, 
     man => \$man
     ) or pod2usage(2);
@@ -126,10 +133,10 @@ foreach (keys %prefix) {
 
 # Choice of database host is a factor in how fast the script runs. Try to find your nearest mirror, and check the database version before running.
 Bio::EnsEMBL::Registry->load_registry_from_db(
-  -host => 'mysql-ensembl-mirror.ebi.ac.uk',
+  -host => $host,
 #  -host => 'ensembldb.ensembl.org',
   -user => 'anonymous',
-  -port => 4240,
+  -port => $port,
   -db_version => $version,
 );
 
@@ -140,7 +147,7 @@ my $ontoa =
     Bio::EnsEMBL::Registry->get_adaptor( 'Multi', 'Ontology', 'OntologyTerm' );
 
 my $db_entry_adaptor =
-    Bio::EnsEMBL::Registry->get_adaptor( 'Human', 'Core', 'DBEntry' );
+    Bio::EnsEMBL::Registry->get_adaptor( $species, 'Core', 'DBEntry' );
 
 my $meta = Bio::EnsEMBL::Registry->get_adaptor($species,'Core','MetaContainer');
 
@@ -304,7 +311,11 @@ sub dump_karyotype {
 sub dump_identifers_mapping {
 
     my $feature = shift;
-    triple('ensembl:'.$feature->stable_id, 'rdfs:seeAlso', u($prefix{identifiers}.'ensembl/'.$feature->stable_id));
+    my $db = 'ensembl';
+    if ($genome) {
+	$db = $db.'.'.$genome;
+    }
+    triple('ensembl:'.$feature->stable_id, 'rdfs:seeAlso', u($prefix{identifiers}.$db.'/'.$feature->stable_id));
 	  
 }
 

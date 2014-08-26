@@ -36,6 +36,10 @@ my $virtgraph;
 my $man;
 my $limit;
 my $help;
+#"ensembldb.ensembl.org";
+my $host = "mysql-ensembl-mirror.ebi.ac.uk"; 
+my $port = "4240";
+my $genome = "";
 
 GetOptions (
     'species=s' => \$species,
@@ -43,6 +47,9 @@ GetOptions (
     'virtgraph' => \$virtgraph,
     'out=s' => \$path,
     'limit=i' => \$limit,
+    'host=s' => \$host,
+    'port=i' => \$port,
+    'genome=s' => \$genome,
     'help|?' => \$help, 
     man => \$man
     ) or pod2usage(2);
@@ -82,10 +89,10 @@ foreach (keys %prefix) {
 
 # Choice of database host is a factor in how fast the script runs. Try to find your nearest mirror, and check the database version before running.
 Bio::EnsEMBL::Registry->load_registry_from_db(
-  -host => 'mysql-ensembl-mirror.ebi.ac.uk',
+  -host => $host,
 #  -host => 'ensembldb.ensembl.org',
   -user => 'anonymous',
-  -port => 4240,
+  -port => $port,
   -db_version => $version,
 #  -no_cache => 1,
 );
