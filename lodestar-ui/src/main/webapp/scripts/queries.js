@@ -20,7 +20,7 @@ var exampleQueries = [
         query:
             "SELECT DISTINCT ?transcript ?id ?typeLabel ?referenceLabel ?begin ?end ?location {\n\n" +
             " # query human data only\n" +
-            " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/75/9606> {\n" +
+            " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
             "   ?transcript obo:SO_transcribed_from ensembl:ENSG00000139618 ;\n" +
             "               rdfs:subClassOf ?type;\n" +
             "               dcterms:identifier ?id .\n" +
@@ -41,7 +41,7 @@ var exampleQueries = [
         query:
             "SELECT DISTINCT ?exon ?id ?referenceLabel ?begin ?end ?strand {\n\n" +
             " # query human data only\n" +
-            " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/75/9606> {\n" +
+            " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
             "   ensembl:ENST00000380152 obo:SO_has_part ?exon;\n" +
             "                           sio:SIO_000974 ?orderedPart .\n" +
             "   ?exon dcterms:identifier ?id .\n" +
