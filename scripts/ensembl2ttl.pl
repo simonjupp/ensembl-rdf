@@ -187,9 +187,9 @@ if ($virtgraph) {
 }
 
 # start to process all genes
-#my $gene = $ga->fetch_by_stable_id('ENSG00000105393');
+my $gene = $ga->fetch_by_stable_id('YKL095W');
 # dump all features#
-while (my $gene = shift @$genes) {
+#while (my $gene = shift @$genes) {
 
   $count++;
   
@@ -208,7 +208,7 @@ while (my $gene = shift @$genes) {
 
   # add some useful meta data
   triple('ensembl:'.$gene->stable_id, 'rdfs:label', ($gene->external_name)? '"'.$gene->external_name.'"':'"'.$gene->display_id.'"' );
-  triple('ensembl:'.$gene->stable_id, 'dc:description', '"'.$gene->description.'"');
+  triple('ensembl:'.$gene->stable_id, 'dc:description', '"'.escape($gene->description).'"');
 
   dump_identifers_mapping($gene);
   dump_feature($gene);
@@ -284,7 +284,7 @@ while (my $gene = shift @$genes) {
   }
   print STDERR ".";
   last if ($limit && $count == $limit);
-}
+#}
 print "Dumped triples for $count genes \n";
 
 my %reference_hash;
@@ -308,6 +308,11 @@ sub dump_karyotype {
     }
 }
 
+sub escape {
+    my $string = shift;
+    $string =~s/(["])/\\$1/g;
+    return $string;
+}
 sub dump_identifers_mapping {
 
     my $feature = shift;
