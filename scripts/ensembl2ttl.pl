@@ -166,10 +166,11 @@ my $count = 0;
 # get the taxon id for this species 
 my $taxon_id = $meta->get_taxonomy_id;
 my $scientific_name = $meta->get_scientific_name;
+my $common_name = $meta->get_common_name;
 
 # print out global triples about the organism  
 triple('taxon:'.$taxon_id, 'rdfs:subClassOf', 'obo:OBI_0100026');
-triple('taxon:'.$taxon_id, 'rdfs:label', '"'.$scientific_name.'"');
+triple('taxon:'.$taxon_id, 'skos:altLabel', '"'.$common_name.'"');
 
 # get the current ensembl release number 
 my $schemaVersion = $meta->get_schema_version;
@@ -208,7 +209,9 @@ while (my $gene = shift @$genes) {
 
   # add some useful meta data
   triple('ensembl:'.$gene->stable_id, 'rdfs:label', ($gene->external_name)? '"'.$gene->external_name.'"':'"'.$gene->display_id.'"' );
-  triple('ensembl:'.$gene->stable_id, 'dc:description', '"'.escape($gene->description).'"');
+  if ($gene->description) {
+      triple('ensembl:'.$gene->stable_id, 'dc:description', '"'.escape($gene->description).'"');
+  }
 
   dump_identifers_mapping($gene);
   dump_feature($gene);
@@ -295,13 +298,13 @@ sub dump_karyotype {
     my $slice = $feature->slice;
     foreach my $band ( @{$slice->get_all_KaryotypeBands()} ) {
 	if ($feature->overlaps($band)) {
-	    my $stable_id = ${species}.'CytogeneticBand'.$slice->seq_region_name().$band->name();
+	    my $stable_id = ${taxon_id}.'CytogeneticBand'.$slice->seq_region_name().$band->name();
 	    my $bandUri = $prefix{ensembl}.$stable_id;
 	    triple('ensembl:'.$feature->stable_id, 'sio:SIO_000061', u($bandUri));
 	    if (!$bandUris{$bandUri}) {
 		dump_feature($band, $stable_id);
 		triple(u($bandUri), 'rdf:type', u($prefix{term}.'CytogeneticBand'));	    
-		triple(u($bandUri), 'rdfs:label', '"'.${species}.' cytogenetic band '.$slice->seq_region_name().$band->name().'"');	    
+		triple(u($bandUri), 'rdfs:label', '"'.${common_name}.' cytogenetic band '.$slice->seq_region_name().$band->name().'"');	    
 		$bandUris{$bandUri}  = 1;
 	    } 
 	}
@@ -354,8 +357,8 @@ sub dump_feature {
 	    triple(u($non_version_url), 'rdfs:subClassOf', 'term:'.$cs->name);
 	    triple('term:'.$cs->name, 'rdfs:subClassOf', 'term:EnsemblRegion');
 	}
-	triple(u($non_version_url), 'rdfs:label', '"'.${species}.' '.$cs->name.' '.$feature->seq_region_name.'"');	
-	triple($reference, 'rdfs:label', '"'.${species}.' '.$cs->name.' '.$feature->seq_region_name.' ('.$cs->version.')"');	
+	triple(u($non_version_url), 'rdfs:label', '"'.${common_name}.' '.$cs->name.' '.$feature->seq_region_name.'"');	
+	triple($reference, 'rdfs:label', '"'.${common_name}.' '.$cs->name.' '.$feature->seq_region_name.' ('.$cs->version.')"');	
 	triple($reference, 'dc:identifier', '"'.$feature->seq_region_name.'"');	
 	triple($reference, 'term:inEnsemblSchemaNumber', '"'.$schemaVersion.'"');	
 	triple($reference, 'term:inEnsemblAssembly', '"'.$cs->version.'"');	
