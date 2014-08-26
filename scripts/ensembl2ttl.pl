@@ -125,10 +125,10 @@ foreach (keys %prefix) {
 
 # Choice of database host is a factor in how fast the script runs. Try to find your nearest mirror, and check the database version before running.
 Bio::EnsEMBL::Registry->load_registry_from_db(
-#  -host => 'mysql-ensembl-mirror.ebi.ac.uk',
-  -host => 'ensembldb.ensembl.org',
+  -host => 'mysql-ensembl-mirror.ebi.ac.uk',
+#  -host => 'ensembldb.ensembl.org',
   -user => 'anonymous',
-#  -port => 4240,
+  -port => 4240,
   -db_version => $version,
 );
 
@@ -179,14 +179,14 @@ if ($virtgraph) {
 }
 
 # start to process all genes
-my $gene = $ga->fetch_by_stable_id('ENSG00000105393');
+#my $gene = $ga->fetch_by_stable_id('ENSG00000105393');
 # dump all features#
-#while (my $gene = shift @$genes) {
+while (my $gene = shift @$genes) {
 
   $count++;
-
+  
 # add karyoptype for the gene
-dump_karyotype($gene);
+  dump_karyotype($gene);
   # get all the trancripts for this gene
   my @trans = @{$gene->get_all_Transcripts};
 
@@ -202,18 +202,18 @@ dump_karyotype($gene);
   triple('ensembl:'.$gene->stable_id, 'rdfs:label', ($gene->external_name)? '"'.$gene->external_name.'"':'"'.$gene->display_id.'"' );
   triple('ensembl:'.$gene->stable_id, 'dc:description', '"'.$gene->description.'"');
 
-dump_identifers_mapping($gene);
+  dump_identifers_mapping($gene);
   dump_feature($gene);
   dump_synonyms($gene);
   
   # relate gene to its taxon
   taxonTriple('ensembl:'.$gene->stable_id);
-
+  
   # loop through the transcripts
   foreach my $transcript (@trans) {
       # transcripts are transcribed from a gene 
       triple( 'ensembl:'.$transcript->stable_id, 'obo:SO_transcribed_from', 'ensembl:'.$gene->stable_id);
-dump_identifers_mapping($transcript);
+      dump_identifers_mapping($transcript);
 
       taxonTriple('ensembl:'.$transcript->stable_id);
       
@@ -232,7 +232,7 @@ dump_identifers_mapping($transcript);
 	  triple('ensembl:'.$trans->stable_id, 'rdfs:subClassOf', 'obo:SO_0000104');
 	  triple('ensembl:'.$trans->stable_id, 'dc:identifier', '"'.$trans->stable_id.'"' );
 	  triple('ensembl:'.$trans->stable_id, 'rdfs:label', '"'.$trans->display_id.'"');
-dump_identifers_mapping($trans);
+	  dump_identifers_mapping($trans);
 	  taxonTriple('ensembl:'.$trans->stable_id);
       }
       
@@ -251,8 +251,8 @@ dump_identifers_mapping($trans);
 	  triple('ensembl:'.$exon->stable_id,'dc:identifier', '"'.$exon->stable_id.'"');
 	  triple('ensembl:'.$exon->stable_id, 'rdfs:label', '"'.$exon->display_id.'"');
 	  
-dump_identifers_mapping($exon);
-taxonTriple('ensembl:'.$exon->stable_id);
+	  dump_identifers_mapping($exon);
+	  taxonTriple('ensembl:'.$exon->stable_id);
 
 	  # we assert that both the gene and the transcript have a part that is the exon
 	  # The exon can refer to both the part on the gene and the part on the transcript 
@@ -275,8 +275,8 @@ taxonTriple('ensembl:'.$exon->stable_id);
     triple('ensembl:'.$gene->stable_id, 'sio:SIO_000558', 'ensembl:'.$alt_gene->stable_id);
   }
   print STDERR ".";
-#  last if ($limit && $count == $limit);
-#}
+  last if ($limit && $count == $limit);
+}
 print "Dumped triples for $count genes \n";
 
 my %reference_hash;
