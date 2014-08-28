@@ -125,7 +125,7 @@ var exampleQueries = [
             "  ?location faldo:reference ?reference .\n" +
             "\n" +
             " # ensembl mouse chromosome 2 stable URI\n" +
-            " ?reference rdfs:subClassOf <http://rdf.ebi.ac.uk/resource/ensembl/10090/11>\n" +
+            " ?reference rdfs:subClassOf <http://rdf.ebi.ac.uk/resource/ensembl/10090/chromosome:11>\n" +
             " FILTER (?begin >= 101100523 && ?end <= 101190725 )\n" +
             " }\n" +
             " ?type rdfs:label ?typelabel .\n" +
