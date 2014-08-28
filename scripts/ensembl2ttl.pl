@@ -170,7 +170,9 @@ my $common_name = $meta->get_common_name;
 
 # print out global triples about the organism  
 triple('taxon:'.$taxon_id, 'rdfs:subClassOf', 'obo:OBI_0100026');
+triple('taxon:'.$taxon_id, 'rdfs:label', '"'.$scientific_name.'"');
 triple('taxon:'.$taxon_id, 'skos:altLabel', '"'.$common_name.'"');
+triple('taxon:'.$taxon_id, 'dc:identifier', '"'.$taxon_id.'"');
 
 # get the current ensembl release number 
 my $schemaVersion = $meta->get_schema_version;
@@ -311,11 +313,6 @@ sub dump_karyotype {
     }
 }
 
-sub escape {
-    my $string = shift;
-    $string =~s/(["])/\\$1/g;
-    return $string;
-}
 sub dump_identifers_mapping {
 
     my $feature = shift;
@@ -422,7 +419,7 @@ sub dump_synonyms {
 
     foreach my $dbe ( @{$db_entries} ) {
 	foreach my $syn ( @{ $dbe->get_all_synonyms }) {	    
-	    triple('ensembl:'.$feature->stable_id, 'skos:altLabel', '"'.$syn.'"');
+	    triple('ensembl:'.$feature->stable_id, 'skos:altLabel', '"'.escape($syn).'"');
 	}
     }
 }
@@ -474,4 +471,12 @@ sub dumpVirtuoso {
 
 
 }
+
+sub escape {
+    my $string = shift;
+    $string =~s/(["])/\\$1/g;
+    return $string;
+}
+
+
 close OUT;

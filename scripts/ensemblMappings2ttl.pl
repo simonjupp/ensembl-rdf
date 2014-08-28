@@ -224,6 +224,7 @@ sub print_Probe_Features {
 close RELOUT;
 close SRCOUT;
 
+
 sub print_DBEntries
 {
     my $db_entries = shift;
@@ -286,7 +287,9 @@ sub print_DBEntries
 	triple(u($ensemblUri), u($relation), u($xrefUri));
 	triple(u($xrefUri), 'rdfs:label', '"'.$label.'"');
 	triple(u($xrefUri), 'dc:identifier', '"'.$dbe->primary_id().'"');
-	triple(u($xrefUri), 'dc:description', '"'.$desc.'"');
+	if ($desc) {
+	    triple(u($xrefUri), 'dc:description', '"'.escape($desc).'"');
+	}
 
 	# type the xref
 	triple(u($xrefUri), 'rdfs:subClassOf', u($xrefTypeUri));
@@ -306,3 +309,8 @@ sub triple {
     printf OUT "%s %s %s .\n",$subject,$predicate,$object;
 }
 
+sub escape {
+    my $string = shift;
+    $string =~s/(["])/\\$1/g;
+    return $string;
+}
