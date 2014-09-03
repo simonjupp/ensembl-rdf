@@ -205,10 +205,12 @@ while (my $gene = shift @$genes) {
   # in the ensmebl namespace if no SO term is found todo: fix this to map to something in SO
   # most are protein coding, but we also have nonsence_mediated_decay and miscmRNA that don't map 
   my $ontoTypeId = getSOOntologyId($gene->biotype());
-
-  # create the gene as a sublclass of the type coming back from SO, usually protein coding. 
-  triple('ensembl:'.$gene->stable_id, 'rdfs:subClassOf', $ontoTypeId );
-
+  if ($ontoTypeId) {
+      # create the gene as a sublclass of the type coming back from SO, usually protein coding. 
+      triple('ensembl:'.$gene->stable_id, 'rdfs:subClassOf', $ontoTypeId );
+  }
+  triple('ensembl:'.$gene->stable_id, 'a', 'term:'.$gene->biotype() );
+  
   # add some useful meta data
   triple('ensembl:'.$gene->stable_id, 'rdfs:label', ($gene->external_name)? '"'.$gene->external_name.'"':'"'.$gene->display_id.'"' );
   if ($gene->description) {
@@ -232,7 +234,8 @@ while (my $gene = shift @$genes) {
       
       # type the transcript using SO again
       triple( 'ensembl:'.$transcript->stable_id, 'rdfs:subClassOf', 'obo:SO_0000673');
-      triple( 'ensembl:'.$transcript->stable_id, 'dc:identifier', '"'.$transcript->stable_id.'"');
+      triple( 'ensembl:'.$transcript->stable_id, 'a', 'term:transcript');
+#      triple( 'ensembl:'.$transcript->stable_id, 'dc:identifier', '"'.$transcript->stable_id.'"');
       triple( 'ensembl:'.$transcript->stable_id, 'rdfs:label', ($transcript->external_name)? '"'.$transcript->external_name.'"':'"'.$transcript->display_id.'"');
 
       # dump the features
@@ -243,7 +246,8 @@ while (my $gene = shift @$genes) {
 	  my $trans = $transcript->translation;
 	  triple('ensembl:'.$transcript->stable_id, 'obo:SO_translates_to', 'ensembl:'.$trans->stable_id);
 	  triple('ensembl:'.$trans->stable_id, 'rdfs:subClassOf', 'obo:SO_0000104');
-	  triple('ensembl:'.$trans->stable_id, 'dc:identifier', '"'.$trans->stable_id.'"' );
+	  triple('ensembl:'.$trans->stable_id, 'a', 'term:protein');
+	  #triple('ensembl:'.$trans->stable_id, 'dc:identifier', '"'.$trans->stable_id.'"' );
 	  triple('ensembl:'.$trans->stable_id, 'rdfs:label', '"'.$trans->display_id.'"');
 	  dump_identifers_mapping($trans);
 	  taxonTriple('ensembl:'.$trans->stable_id);
@@ -261,7 +265,8 @@ while (my $gene = shift @$genes) {
 	  
 	  # exon type of SO exon, both gene and transcript are linked via has part
 	  triple('ensembl:'.$exon->stable_id,'rdfs:subClassOf','obo:SO_0000147');
-	  triple('ensembl:'.$exon->stable_id,'dc:identifier', '"'.$exon->stable_id.'"');
+	  triple('ensembl:'.$exon->stable_id,'a','term:exon');
+	  #triple('ensembl:'.$exon->stable_id,'dc:identifier', '"'.$exon->stable_id.'"');
 	  triple('ensembl:'.$exon->stable_id, 'rdfs:label', '"'.$exon->display_id.'"');
 	  
 	  dump_identifers_mapping($exon);
@@ -449,11 +454,12 @@ sub getSOOntologyId {
 	@{ $ontoa->fetch_all_by_name( $term, 'SO' ) };
     
     if (!$typeterm) {
+	
 	print STDERR "WARN: Can't find SO term for $term\n";
-	$term2ontologyId{$term} = "term:" . $term; 
-	# make the biotype a child of an ensmebl biotype
-	triple($term2ontologyId{$term}, 'rdfs:subClassOf', 'term:EnsemblFeature');
- 	return $term2ontologyId{$term};
+	$term2ontologyId{$term} =1; 
+	# make the biotype a child of an ensembl biotype
+	#triple($term2ontologyId{$term}, 'rdfs:subClassOf', 'term:EnsemblFeature');
+ 	return undef;
     }
     
     my $id = $typeterm->accession;
@@ -461,7 +467,7 @@ sub getSOOntologyId {
     $term2ontologyId{$term} = $id;
 
     # make the biotype a child of an ensmebl biotype
-    triple($term2ontologyId{$term}, 'rdfs:subClassOf', 'term:EnsemblFeature');
+    # triple($term2ontologyId{$term}, 'rdfs:subClassOf', 'term:EnsemblFeature');
  
     return $term2ontologyId{$term};
     

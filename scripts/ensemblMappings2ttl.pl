@@ -292,7 +292,7 @@ sub print_DBEntries
 	}
 
 	# type the xref
-	triple(u($xrefUri), 'rdfs:subClassOf', u($xrefTypeUri));
+	triple(u($xrefUri), 'a', u($xrefTypeUri));
 	
     }
 }
