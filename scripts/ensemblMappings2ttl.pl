@@ -316,16 +316,23 @@ sub print_DBEntries
 	my $relation = $prefix{term}.$rel; 
 	$relations{$name}{$rel}=1;
 
+	my @xrefUris = ();
+	my $xrefTypeUri;	
 
-	my $xrefUri;
-	my $xrefTypeUri;
-	
-
+	# use the config file to create a URI for the xref
 	if ($dbname2short{$name}) {
-	    $xrefUri = "http://identifiers.org/".$dbname2short{$name}."/".$id;
+	    # identifiers.org 
+	    push @xrefUris , "http://identifiers.org/".$dbname2short{$name}."/".$id;
+	}
+	if ($dbname2base{$name}) {
+	    # other, check for any regex
+	    if ($dbid2regex{$name}) {
+		eval "\$id =~ $dbid2regex{$name}";
+	    }
+	    push @xrefUris, $dbname2base{$name}.$id;
 	}
 	
-
+	# crete a type for the xrefs
 	if ($dbname2type{$name}) {
 	    $xrefTypeUri = $dbname2type{$name};
 	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'term:EnsemblExternalDBEntry');
@@ -337,6 +344,9 @@ sub print_DBEntries
 	    triple(u($xrefTypeUri), 'rdfs:label', '"'.$name.'"');
 	}
 
+	# keep a record of combination of source db, relation and type
+	# we use these to spot any types we might have missed on the 
+	# config and to create the VoID linkset descriptions at the end
 	if (!$ensemblSources{$xrefTypeUri}) {
 	    $ensemblSources{$xrefTypeUri}{$name}{$rel}{$biotype} = 1;
 	    triple(u($relation), 'rdfs:subPropertyOf', 'skos:related');
@@ -347,22 +357,8 @@ sub print_DBEntries
 	}
 	$ensemblSources{$xrefTypeUri}{$name}{$rel}{$biotype}++;
 	
-	triple(u($ensemblUri), u($relation), u($xrefUri));
-	triple(u($xrefUri), 'rdfs:label', '"'.$label.'"');
-	triple(u($xrefUri), 'dc:identifier', '"'.$dbe->primary_id().'"');
-	if ($desc) {
-	    triple(u($xrefUri), 'dc:description', '"'.escape($desc).'"');
-	}
-	# type the xref
-	triple(u($xrefUri), 'a', u($xrefTypeUri));
-
-	# add a canoncial LOD URI if provided
-	if ($dbname2base{$name}) {
-	    $xrefUri= $dbname2base{$name}.$id;
-	    if ($dbid2regex{$name}) {
-		eval "\$id =~ $dbid2regex{$name}";
-	    }
-	    $xrefUri= $dbname2base{$name}.$id;
+	# create the xref triples
+	foreach my $xrefUri (@xrefUris) {
 	    triple(u($ensemblUri), u($relation), u($xrefUri));
 	    triple(u($xrefUri), 'rdfs:label', '"'.$label.'"');
 	    triple(u($xrefUri), 'dc:identifier', '"'.$dbe->primary_id().'"');
