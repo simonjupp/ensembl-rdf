@@ -28,6 +28,7 @@ use Getopt::Long;
 use Pod::Usage;
 use Bio::EnsEMBL::Registry;
 use Bio::EnsEMBL::DBSQL::DBAdaptor;
+use Digest::MD5 qw(md5_hex);
 
 my $species = '';
 my $version = '';
@@ -72,11 +73,14 @@ open OUT, ">$outfile" || die "Can't open out file $outfile\n";
 
 my %prefix = (
   ensembl => 'http://rdf.ebi.ac.uk/resource/ensembl/',
+  dataset => 'http://rdf.ebi.ac.uk/dataset/ensembl/',
   term => 'http://rdf.ebi.ac.uk/terms/ensembl/',
   rdfs => 'http://www.w3.org/2000/01/rdf-schema#',
+  void => 'http://rdfs.org/ns/void#',
   sio => 'http://semanticscience.org/resource/',
   dc => 'http://purl.org/dc/terms/',
   rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+  prov => 'http://www.w3.org/ns/prov#',
   faldo => 'http://biohackathon.org/resource/faldo#',
   obo => 'http://purl.obolibrary.org/obo/',
   skos => 'http://www.w3.org/2004/02/skos/core#',
@@ -118,9 +122,9 @@ my %dbid2regex;
 my %ignore;
 
 # check if we want to create a virtuoso graph file for this output file
+my $versionGraphUri = "http://rdf.ebi.ac.uk/dataset/ensembl/".$version;
+my $graphUri = $versionGraphUri."/".$taxon_id;
 if ($virtgraph) {
-    my $versionGraphUri = "http://rdf.ebi.ac.uk/dataset/ensembl/".$version;
-    my $graphUri = $versionGraphUri."/".$taxon_id;
     my $graphFile = $outfile.'.graph';
     open GRAPH, ">$graphFile" || die "Can't create the virtuoso graph file\n";
     print GRAPH $graphUri;
@@ -133,15 +137,17 @@ if ($virtgraph) {
 # read config
 open DBNAME , '<xref_config.txt' || die "can't open mapping config file\n";
 while (<DBNAME>) {
+    next if $. < 2; # Skip first line
+
     chomp;
     my $line = $_;
     my @split = split /\t/, $line;
     my $dbname = $split[0];
-    my $baseUri = $split[1];
-    my $typeUri = $split[2];
-    my $shortname = $split[3];
-    my $regex = $split[4];
+    my $shortname = $split[2];
+    my $baseUri = $split[3];
+    my $typeUri = $split[4];
     my $na = $split[5];
+    my $regex = $split[6];
     
     if ($na) {
 	$ignore{$dbname} =1;
@@ -169,36 +175,98 @@ my $genes = $ga->fetch_all();
 my $count = 0;
 while (my $gene = shift @$genes) {
     $count++;
-    print_DBEntries( $gene->get_all_DBEntries() , $gene->stable_id());
+    print_DBEntries( $gene->get_all_DBEntries() , $gene, undef, $gene->biotype());
     
     foreach my $transcript ( @{ $gene->get_all_Transcripts() } ) {
-	print_DBEntries( $transcript->get_all_DBEntries() , $gene->stable_id(), 'http://rdf.ebi.ac.uk/terms/ensembl/INFERRED_FROM_TRANSCRIPT');
-	print_DBEntries( $transcript->get_all_DBEntries() , $transcript->stable_id());
+	print_DBEntries( $transcript->get_all_DBEntries() , $gene, 'INFERRED_FROM_TRANSCRIPT', $gene->biotype());
+	print_DBEntries( $transcript->get_all_DBEntries() , $transcript,  undef, "transcript");
 #	print_Probe_Features ($transcript);
 	
 	if ( defined $transcript->translation() ) {
 	    my $translation = $transcript->translation();
-	    print_DBEntries( $translation->get_all_DBEntries() , $gene->stable_id(), 'http://rdf.ebi.ac.uk/terms/ensembl/INFERRED_FROM_TRANSLATION');
-	    print_DBEntries( $translation->get_all_DBEntries(), $translation->stable_id() );
+	    print_DBEntries( $translation->get_all_DBEntries() , $gene, 'INFERRED_FROM_TRANSLATION', $gene->biotype());
+	    print_DBEntries( $translation->get_all_DBEntries(), $translation, undef,  "protein");
 	}
     }
   last if ($limit && $count == $limit);
 }
 
 # print relation assertions as sub property of skos:related
-open RELOUT, ">${path}${species}_xref_relations.txt" || die "can't open ${species} xref relations\n";
+#open RELOUT, ">${path}${species}_xref_relations.txt" || die "can't open ${species} xref relations\n";
 open SRCOUT, ">${path}${species}_xref_sources.txt" || die "can't open ${species} xref relations\n";
+open LINKSETOUT, ">${path}${species}_linksets_void.ttl" || die "can't open ${species} xref relations\n";
 
-while ( my ($key, $value) = each(%relations) ) {
-    print RELOUT "$key\n";
-}
+#while ( my ($key, $value) = each(%relations) ) {
+#    print RELOUT "$key\n";
+#}
 
-while ( my ($key, $relhash) = each(%ensemblSources) ) {
+my %linksets;
+while ( my ($type, $nameHash) = each(%ensemblSources) ) {
     
-    while ( my ($rel, $value) = each(%$relhash) ) {	
-	print SRCOUT "${key}\t${rel}\t${value}\n";
+    while ( my ($objectName, $relhash) = each(%$nameHash) ) {
+	next if ($objectName ne "Uniprot/SPTREMBL");
+	while ( my ($rel, $subjectNameHash) = each(%$relhash) ) {	
+	    while ( my ($subjectName, $count) = each(%$subjectNameHash) ) {	
+		print SRCOUT "${objectName}\t${type}\t${rel}\t${subjectName}\t${count}\n";
+		
+		my $linksetid = "linkset-" . md5_hex( ($objectName, $rel, $subjectName));
+		my $linksetLabel = $subjectName . " " . $rel . " " . $objectName . " linkset";
+		$linksets{$linksetid} = $linksetLabel;
+		my $linksetUri = $prefix{dataset}.$version."/".$linksetid;
+		my $subjectPartitionUri = $prefix{dataset}.$version."/".$subjectName."-dataset-partition";
+		my $objectPartitionUri .=  $prefix{dataset}.$version."/".$objectName."-dataset-partition";
+		
+		# define the partitions
+		printf LINKSETOUT "%s %s %s .\n",u( $prefix{dataset}.$version), u($prefix{void}."classPartition"), u($subjectPartitionUri);
+		printf LINKSETOUT "%s %s %s .\n",u( $prefix{dataset}.$version), u($prefix{void}."classPartition"), u($objectPartitionUri);
+		printf LINKSETOUT "%s %s %s .\n",u($subjectPartitionUri), u($prefix{void}."class"), u($prefix{term}.$subjectName);
+		printf LINKSETOUT "%s %s %s .\n",u($objectPartitionUri), u($prefix{void}."class"), u($type);
+		
+		# define the linksets 
+		printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{void}."linkPredicate"), u($prefix{term}.$rel);
+		printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{void}."subjectTarget"), u($subjectPartitionUri);
+		printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{void}."objectTarget"), u($objectPartitionUri);
+		printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{void}."triples"), $count;
+
+		# if inferred link, link to provenance
+		if ($rel =~/^INFERRED_FROM/) {
+		    foreach my $inferredFromRel  (keys %{$relations{$objectName}} ) {
+			if ($inferredFromRel != $rel) {
+			    my $inferredLinksetid = "linkset-" . md5_hex( ($objectName, $inferredFromRel, "transcript"));
+			    if ($rel =~/TRANSLATION/) {
+				$inferredLinksetid = "linkset-" . md5_hex( ($objectName, $inferredFromRel, "protein"));
+			    }
+			    my $inferredLinksetUri = $prefix{dataset}.$version."/".$inferredLinksetid;
+#			    my $inferredLinksetLabel = $subjectName . " " . $rel . " " . $objectName . " linkset";
+#			    $linksets{$inferredLinksetid} = $inferredLinksetLabel;
+			    
+			    # derived from subject partition, transcript partition and protein partition
+			    printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{prov}."wasDerivedFrom"), u($inferredLinksetUri);
+			} 
+		    }
+	#		print "\n";
+		    my $geneTranscriptPartitionUri = $prefix{dataset}.$version."/linkset-transcript-SO_transcribed_from-".$subjectName;
+		    printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{prov}."wasDerivedFrom"), u($geneTranscriptPartitionUri);
+		    if ($rel =~/TRANSLATION/) {
+			my $transcriptProteinPartitionUri = $prefix{dataset}.$version."/linkset-transcript-SO_translates_to-protein";
+			printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{prov}."wasDerivedFrom"), u($transcriptProteinPartitionUri);
+		    }
+		}
+	    }
+#	print SRCOUT "${key}\t${rel}\t${value}\n";
+	}
     }
 }
+
+while (my ($key, $value) = each (%linksets)) {
+    printf LINKSETOUT "%s %s %s .\n", u($prefix{dataset}.$version."/".$key), "a", u($prefix{void}."Linkset");
+    printf LINKSETOUT "%s %s \"%s\" .\n", u($prefix{dataset}.$version."/".$key), u($prefix{rdfs}."label"),  $value;
+}
+
+printf LINKSETOUT "%s %s %s .\n", u($prefix{dataset}.$version."/".$taxon_id), "a", u($prefix{void}."Dataset");
+printf LINKSETOUT "%s %s \"%s Ensembl %s RDF\" .\n", u($prefix{dataset}.$version."/".$taxon_id), u($prefix{dc}."title"), $scientific_name, $version;
+printf LINKSETOUT "%s %s <ftp://ftp.ebi.ac.uk/pub/databases/RDF/ensembl/%s/%s> .\n", u($prefix{dataset}.$version."/".$taxon_id), u($prefix{void}."datadump"), $version, ${species}.'_'.${version}.'.ttl';
+
 
 sub print_Probe_Features {
     my $transcript = shift;
@@ -221,16 +289,17 @@ sub print_Probe_Features {
     }
 }
 
-close RELOUT;
+#close RELOUT;
 close SRCOUT;
-
+close LINKSETOUT;
 
 sub print_DBEntries
 {
     my $db_entries = shift;
-    my $ensId = shift;
+    my $feature = shift;
     my $rel = shift;
-    
+    my $biotype = shift;
+
     foreach my $dbe ( @{$db_entries} ) {
 
 	#printf "\tXREF %s (db:%s) (id:%s) (desc:%s) (enstype:%s) (exttype:%s) (evidence:%s) (linkage:%s)\n",
@@ -240,49 +309,43 @@ sub print_DBEntries
 	my $id = $dbe->primary_id();
 	my $desc = $dbe->description();
 
-	my $ensemblUri = $prefix{ensembl}.$ensId; 
-	my $relation = $prefix{term}.$dbe->info_type(); 
-	if ($rel) {
-	    $relation = $rel;
+	my $ensemblUri = $prefix{ensembl}.$feature->stable_id(); 
+	if (!$rel) {
+	    $rel = $dbe->info_type();
 	}
-	$relations{$relation}=1;
+	my $relation = $prefix{term}.$rel; 
+	$relations{$name}{$rel}=1;
 
-	if (!$ensemblSources{$name}) {
-	    $ensemblSources{$name}{$relation} = $id;
-	    triple(u($relation), 'rdfs:subPropertyOf', 'skos:related');
-	}
-	elsif (!$ensemblSources{$name}{$relation}) {
-	    $ensemblSources{$name}{$relation} = $id;
-	    triple(u($relation), 'rdfs:subPropertyOf', 'skos:related');
-	}
 
 	my $xrefUri;
 	my $xrefTypeUri;
 	
-	if ($dbid2regex{$name}) {
-	    eval "\$id =~ $dbid2regex{$name}";
-	}
 
-	if ($dbname2base{$name}) {
-	    $xrefUri= $dbname2base{$name}.$id;
-	}
-	elsif ($dbname2short{$name}) {
+	if ($dbname2short{$name}) {
 	    $xrefUri = "http://identifiers.org/".$dbname2short{$name}."/".$id;
 	}
-	else {
-	    $xrefUri = "http://identifiers.org/".lc($name)."/".$id;
-	}
 	
+
 	if ($dbname2type{$name}) {
 	    $xrefTypeUri = $dbname2type{$name};
-	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'term:EnsemblDBEntry');
+	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'term:EnsemblExternalDBEntry');
 	    triple(u($xrefTypeUri), 'rdfs:label', '"'.$name.'"');
 	}
 	else {
 	    $xrefTypeUri = $prefix{term}.$name;	    
-	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'term:EnsemblDBEntry');
+	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'term:EnsemblExternalDBEntry');
 	    triple(u($xrefTypeUri), 'rdfs:label', '"'.$name.'"');
 	}
+
+	if (!$ensemblSources{$xrefTypeUri}) {
+	    $ensemblSources{$xrefTypeUri}{$name}{$rel}{$biotype} = 1;
+	    triple(u($relation), 'rdfs:subPropertyOf', 'skos:related');
+	}
+	elsif (!$ensemblSources{$xrefTypeUri}{$name}{$rel}{$biotype}) {
+	    $ensemblSources{$xrefTypeUri}{$name}{$rel}{$biotype} = 1;
+	    triple(u($relation), 'rdfs:subPropertyOf', 'skos:related');
+	}
+	$ensemblSources{$xrefTypeUri}{$name}{$rel}{$biotype}++;
 	
 	triple(u($ensemblUri), u($relation), u($xrefUri));
 	triple(u($xrefUri), 'rdfs:label', '"'.$label.'"');
@@ -290,10 +353,25 @@ sub print_DBEntries
 	if ($desc) {
 	    triple(u($xrefUri), 'dc:description', '"'.escape($desc).'"');
 	}
-
 	# type the xref
 	triple(u($xrefUri), 'a', u($xrefTypeUri));
-	
+
+	# add a canoncial LOD URI if provided
+	if ($dbname2base{$name}) {
+	    $xrefUri= $dbname2base{$name}.$id;
+	    if ($dbid2regex{$name}) {
+		eval "\$id =~ $dbid2regex{$name}";
+	    }
+	    $xrefUri= $dbname2base{$name}.$id;
+	    triple(u($ensemblUri), u($relation), u($xrefUri));
+	    triple(u($xrefUri), 'rdfs:label', '"'.$label.'"');
+	    triple(u($xrefUri), 'dc:identifier', '"'.$dbe->primary_id().'"');
+	    if ($desc) {
+		triple(u($xrefUri), 'dc:description', '"'.escape($desc).'"');
+	    }
+	    # type the xref
+	    triple(u($xrefUri), 'a', u($xrefTypeUri));
+	}
     }
 }
 

@@ -8,6 +8,7 @@
     <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
     <!ENTITY ensembl "http://rdf.ebi.ac.uk/terms/ensembl/" >
     <!ENTITY skos "http://www.w3.org/2004/02/skos/core#" >
+    <!ENTITY ensembl2 "http://rdf.ebi.ac.uk/terms/ensembl/3" >
     <!ENTITY resource "http://semanticscience.org/resource/" >
     <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
     <!ENTITY faldo "http://biohackathon.org/resource/faldo#" >
@@ -17,11 +18,12 @@
 
 <rdf:RDF xmlns="http://rdf.ebi.ac.uk/terms/ensembl#"
      xml:base="http://rdf.ebi.ac.uk/terms/ensembl"
-     xmlns:obo="http://purl.obolibrary.org/obo/"
-     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:terms="http://purl.org/dc/terms/"
-     xmlns:ensembl="http://rdf.ebi.ac.uk/terms/ensembl/"
      xmlns:resource="http://semanticscience.org/resource/"
+     xmlns:obo="http://purl.obolibrary.org/obo/"
+     xmlns:ensembl2="&ensembl;3"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:ensembl="http://rdf.ebi.ac.uk/terms/ensembl/"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -40,6 +42,7 @@
      -->
 
     <owl:AnnotationProperty rdf:about="&terms;description"/>
+    <owl:AnnotationProperty rdf:about="&resource;equivalentTo"/>
     <owl:AnnotationProperty rdf:about="&skos;altLabel"/>
     
 
@@ -98,9 +101,107 @@
     
 
 
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/CHECKSUM -->
+
+    <owl:ObjectProperty rdf:about="&ensembl;CHECKSUM">
+        <rdfs:label xml:lang="en">checksum mapping</rdfs:label>
+        <terms:description>Checksums provided by some of our providers are used in lieu of sequence matching to indicate identity</terms:description>
+        <rdfs:subPropertyOf rdf:resource="&skos;related"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/DEPENDENT -->
+
+    <owl:ObjectProperty rdf:about="&ensembl;DEPENDENT">
+        <rdfs:label xml:lang="en">dependant mapping</rdfs:label>
+        <terms:description>Mapping dependent upon another mapping in Ensembl.</terms:description>
+        <rdfs:subPropertyOf rdf:resource="&skos;related"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/DIRECT -->
+
+    <owl:ObjectProperty rdf:about="&ensembl;DIRECT">
+        <rdfs:label xml:lang="en">direct mapping</rdfs:label>
+        <terms:description>A direct mapping between to an external database entry.</terms:description>
+        <rdfs:subPropertyOf rdf:resource="&skos;related"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/INFERRED_FROM_TRANSCRIPT -->
+
+    <owl:ObjectProperty rdf:about="&ensembl;INFERRED_FROM_TRANSCRIPT">
+        <rdfs:label xml:lang="en">inferred mapping from transcript</rdfs:label>
+        <terms:description>This is a mapping between an ensembl identifier and external identifiers that has been inferred via transcription. Typically this is a mapping from a gene to one of it&#39;s transcripts xrefs</terms:description>
+        <rdfs:subPropertyOf rdf:resource="&skos;related"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/INFERRED_FROM_TRANSLATION -->
+
+    <owl:ObjectProperty rdf:about="&ensembl;INFERRED_FROM_TRANSLATION">
+        <rdfs:label xml:lang="en">inferred mapping from translation</rdfs:label>
+        <terms:description>This is a mapping between an ensembl identifier and external identifiers that has been inferred via translation. Typically this is a mapping from a gene to one of it&#39;s translated products. A good example is the mapping of a Ensembl gene id to a UniProt protein id. </terms:description>
+        <rdfs:subPropertyOf rdf:resource="&skos;related"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/INFERRED_PAIR -->
+
+    <owl:ObjectProperty rdf:about="&ensembl;INFERRED_PAIR">
+        <rdfs:label xml:lang="en">inferred pair mapping</rdfs:label>
+        <terms:description>This is a low quality assertion based on a transcript mapping to RefSeq. We infer the association of the Refseq protein to our Ensembl protein.</terms:description>
+        <rdfs:subPropertyOf rdf:resource="&skos;related"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/MISC -->
+
+    <owl:ObjectProperty rdf:about="&ensembl;MISC">
+        <rdfs:label xml:lang="en">misc mapping</rdfs:label>
+        <terms:description>Uncategorised mapping</terms:description>
+        <rdfs:subPropertyOf rdf:resource="&skos;related"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/PROJECTION -->
+
+    <owl:ObjectProperty rdf:about="&ensembl;PROJECTION">
+        <rdfs:label xml:lang="en">projection mapping</rdfs:label>
+        <terms:description>A mapping taken from one species and applied to another, due to homology.</terms:description>
+        <rdfs:subPropertyOf rdf:resource="&skos;related"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/SEQUENCE_MATCH -->
+
+    <owl:ObjectProperty rdf:about="&ensembl;SEQUENCE_MATCH">
+        <rdfs:label xml:lang="en">sequence match mapping</rdfs:label>
+        <terms:description>Mapping based on an exact sequence match.</terms:description>
+        <rdfs:subPropertyOf rdf:resource="&skos;related"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://semanticscience.org/resource/SIO_000053 -->
 
     <owl:ObjectProperty rdf:about="&resource;SIO_000053"/>
+    
+
+
+    <!-- http://semanticscience.org/resource/SIO_000061 -->
+
+    <owl:ObjectProperty rdf:about="&resource;SIO_000061">
+        <rdfs:label>located in</rdfs:label>
+    </owl:ObjectProperty>
     
 
 
@@ -140,6 +241,12 @@
     
 
 
+    <!-- http://www.w3.org/2004/02/skos/core#related -->
+
+    <owl:ObjectProperty rdf:about="&skos;related"/>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -173,6 +280,12 @@
     <owl:Class rdf:about="&faldo;Region">
         <rdfs:subClassOf>
             <owl:Restriction>
+                <owl:onProperty rdf:resource="&faldo;begin"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
                 <owl:onProperty rdf:resource="&faldo;end"/>
                 <owl:someValuesFrom rdf:resource="&owl;Thing"/>
             </owl:Restriction>
@@ -180,65 +293,9 @@
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="&faldo;reference"/>
-                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+                <owl:someValuesFrom rdf:resource="&obo;SO_0000340"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="&faldo;begin"/>
-                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-    </owl:Class>
-    
-
-
-    <!-- http://identifiers.org/taxonomy/9606 -->
-
-    <owl:Class rdf:about="http://identifiers.org/taxonomy/9606">
-        <rdfs:subClassOf rdf:resource="&obo;OBI_0100026"/>
-    </owl:Class>
-    
-
-
-    <!-- http://purl.obolibrary.org/obo/OBI_0100026 -->
-
-    <owl:Class rdf:about="&obo;OBI_0100026">
-        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
-        <skos:altLabel>OBI organism</skos:altLabel>
-    </owl:Class>
-    
-
-
-    <!-- http://purl.obolibrary.org/obo/SO_0000010 -->
-
-    <owl:Class rdf:about="&obo;SO_0000010">
-        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="&resource;SIO_010080"/>
-                <owl:allValuesFrom rdf:resource="&obo;SO_0000673"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <skos:altLabel>SO protein coding gene</skos:altLabel>
-        <terms:description>A region (or regions) that includes all of the sequence elements necessary to encode a functional transcript that may be translated into a polypeptide sequence. A gene may include regulatory regions, transcribed regions and/or other functional sequence regions.</terms:description>
-    </owl:Class>
-    
-
-
-    <!-- http://purl.obolibrary.org/obo/SO_0000104 -->
-
-    <owl:Class rdf:about="&obo;SO_0000104">
-        <skos:altLabel>polypeptide</skos:altLabel>
-    </owl:Class>
-    
-
-
-    <!-- http://purl.obolibrary.org/obo/SO_0000147 -->
-
-    <owl:Class rdf:about="&obo;SO_0000147">
-        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
-        <skos:altLabel>SO exon</skos:altLabel>
     </owl:Class>
     
 
@@ -246,34 +303,32 @@
     <!-- http://purl.obolibrary.org/obo/SO_0000340 -->
 
     <owl:Class rdf:about="&obo;SO_0000340">
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="&obo;RO_0002162"/>
-                <owl:someValuesFrom rdf:resource="&obo;OBI_0100026"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <skos:altLabel xml:lang="en">SO chromosome</skos:altLabel>
+        <rdfs:label>chromosome</rdfs:label>
     </owl:Class>
     
 
 
-    <!-- http://purl.obolibrary.org/obo/SO_0000673 -->
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/3prime_overlapping_ncrna -->
 
-    <owl:Class rdf:about="&obo;SO_0000673">
+    <owl:Class rdf:about="&ensembl;3prime_overlapping_ncrna">
+        <rdfs:label xml:lang="en">3prime_overlapping_ncrna</rdfs:label>
         <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Transcripts where ditag and/or published experimental data strongly supports the existence of short non-coding transcripts transcribed from the 3&#39;UTR.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/CytogeneticBand -->
+
+    <owl:Class rdf:about="&ensembl;CytogeneticBand">
+        <rdfs:label>Cytogenetic band</rdfs:label>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&resource;SIO_010082"/>
-                <owl:someValuesFrom rdf:resource="&obo;SO_0000104"/>
+                <owl:onProperty rdf:resource="&faldo;location"/>
+                <owl:someValuesFrom rdf:resource="&faldo;Region"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="&resource;SIO_000053"/>
-                <owl:allValuesFrom rdf:resource="&obo;SO_0000147"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <skos:altLabel>SO transcript</skos:altLabel>
+        <terms:description>A cytogenetic band is a region of chromosome that can be seen using a microscope and special stains. The cytogenetic bands are labeled p1, p2, p3,   q1, q2, q3, etc., counting from the centromere out toward the telomeres. At higher resolutions, sub-bands can be seen within the bands. The sub-bands are also numbered from the centromere out toward the telomere.</terms:description>
     </owl:Class>
     
 
@@ -290,10 +345,329 @@
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&obo;RO_0002162"/>
-                <owl:someValuesFrom rdf:resource="&obo;OBI_0100026"/>
+                <owl:onProperty rdf:resource="&resource;SIO_000061"/>
+                <owl:someValuesFrom rdf:resource="&ensembl;CytogeneticBand"/>
             </owl:Restriction>
         </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/IG_C_gene -->
+
+    <owl:Class rdf:about="&ensembl;IG_C_gene">
+        <rdfs:label xml:lang="en">IG_C_gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Immunoglobulin_variable_chain_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/IG_C_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;IG_C_pseudogene">
+        <rdfs:label xml:lang="en">IG_C_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;inactivated_immunoglobulin_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/IG_D_gene -->
+
+    <owl:Class rdf:about="&ensembl;IG_D_gene">
+        <rdfs:label xml:lang="en">IG_D_gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Immunoglobulin_variable_chain_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/IG_J_gene -->
+
+    <owl:Class rdf:about="&ensembl;IG_J_gene">
+        <rdfs:label xml:lang="en">IG_J_gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Immunoglobulin_variable_chain_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/IG_J_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;IG_J_pseudogene">
+        <rdfs:label xml:lang="en">IG_J_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;inactivated_immunoglobulin_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/IG_V_gene -->
+
+    <owl:Class rdf:about="&ensembl;IG_V_gene">
+        <rdfs:label xml:lang="en">IG_V_gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Immunoglobulin_variable_chain_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/IG_V_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;IG_V_pseudogene">
+        <rdfs:label xml:lang="en">IG_V_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;inactivated_immunoglobulin_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/Immunoglobulin_variable_chain_gene -->
+
+    <owl:Class rdf:about="&ensembl;Immunoglobulin_variable_chain_gene">
+        <rdfs:label xml:lang="en">Immunoglobulin (Ig) variable chain gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Immunoglobulin (Ig) variable chain gene imported or annotated according to the IMGT</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/LRG_gene -->
+
+    <owl:Class rdf:about="&ensembl;LRG_gene">
+        <rdfs:label xml:lang="en">LRG_gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Gene in a &quot;Locus Reference Genomic&quot; region known to have disease-related sequence variations.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/Mt_rRNA -->
+
+    <owl:Class rdf:about="&ensembl;Mt_rRNA">
+        <rdfs:label xml:lang="en">Mt_rRNA</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNA"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/Mt_tRNA -->
+
+    <owl:Class rdf:about="&ensembl;Mt_tRNA">
+        <rdfs:label xml:lang="en">Mt_tRNA</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNA"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/Mt_tRNA_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;Mt_tRNA_pseudogene">
+        <rdfs:label xml:lang="en">Mt_tRNA_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNAs_pseudogene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/Non-coding_RNA -->
+
+    <owl:Class rdf:about="&ensembl;Non-coding_RNA">
+        <rdfs:label xml:lang="en">Non-coding RNA</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Non-coding RNA predicted using sequences from RFAM and miRBase</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/Non-coding_RNAs_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;Non-coding_RNAs_pseudogene">
+        <rdfs:label xml:lang="en">Non-coding RNAs pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNA"/>
+        <terms:description>Non-coding RNAs predicted to be pseudogenes by the Ensembl pipeline</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/T-cell_receptor_gene -->
+
+    <owl:Class rdf:about="&ensembl;T-cell_receptor_gene">
+        <rdfs:label xml:lang="en">T-cell receptor (TcrR) gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/TR_C_gene -->
+
+    <owl:Class rdf:about="&ensembl;TR_C_gene">
+        <rdfs:label xml:lang="en">TR_C_gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;T-cell_receptor_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/TR_D_gene -->
+
+    <owl:Class rdf:about="&ensembl;TR_D_gene">
+        <rdfs:label xml:lang="en">TR_D_gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;T-cell_receptor_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/TR_J_gene -->
+
+    <owl:Class rdf:about="&ensembl;TR_J_gene">
+        <rdfs:label xml:lang="en">TR_J_gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;T-cell_receptor_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/TR_J_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;TR_J_pseudogene">
+        <rdfs:label xml:lang="en">TR_J_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;inactivated_immunoglobulin_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/TR_V_gene -->
+
+    <owl:Class rdf:about="&ensembl;TR_V_gene">
+        <rdfs:label xml:lang="en">TR_V_gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;T-cell_receptor_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/TR_V_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;TR_V_pseudogene">
+        <rdfs:label xml:lang="en">TR_V_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;inactivated_immunoglobulin_gene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/ambiguous_orf -->
+
+    <owl:Class rdf:about="&ensembl;ambiguous_orf">
+        <rdfs:label xml:lang="en">ambiguous_orf</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Transcript believed to be protein coding, but with more than one possible open reading frame.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/antisense -->
+
+    <owl:Class rdf:about="&ensembl;antisense">
+        <rdfs:label xml:lang="en">antisense</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Has transcripts that overlap the genomic span (i.e. exon or introns) of a protein-coding locus on the opposite strand.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/artifact -->
+
+    <owl:Class rdf:about="&ensembl;artifact">
+        <rdfs:label xml:lang="en">artifact</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Used to tag mistakes in the public databases (Ensembl/SwissProt/Trembl)</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/disrupted_domain -->
+
+    <owl:Class rdf:about="&ensembl;disrupted_domain">
+        <rdfs:label xml:lang="en">disrupted_domain</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Otherwise viable coding region omitted from this alternatively spliced transcript because the splice variation affects a region coding for a protein domain.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/exon -->
+
+    <owl:Class rdf:about="&ensembl;exon">
+        <rdfs:label xml:lang="en">exon</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>An exon is a nucleotide sequence encoded by a gene that remains present within the final mature RNA product of that gene after introns have been removed by RNA splicing. </terms:description>
+        <resource:equivalentTo rdf:resource="&resource;SIO_010445"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/inactivated_immunoglobulin_gene -->
+
+    <owl:Class rdf:about="&ensembl;inactivated_immunoglobulin_gene">
+        <rdfs:label xml:lang="en">inactivated immunoglobulin gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/lincRNA -->
+
+    <owl:Class rdf:about="&ensembl;lincRNA">
+        <rdfs:label xml:lang="en">lincRNA</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Long, intervening noncoding (linc) RNAs, that can be found in evolutionarily conserved, intergenic regions.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/miRNA -->
+
+    <owl:Class rdf:about="&ensembl;miRNA">
+        <rdfs:label xml:lang="en">miRNA</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNA"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/miRNA_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;miRNA_pseudogene">
+        <rdfs:label xml:lang="en">miRNA_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNAs_pseudogene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/misc_RNA -->
+
+    <owl:Class rdf:about="&ensembl;misc_RNA">
+        <rdfs:label xml:lang="en">misc_RNA</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNA"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/misc_RNA_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;misc_RNA_pseudogene">
+        <rdfs:label xml:lang="en">misc_RNA_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNAs_pseudogene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/non_coding -->
+
+    <owl:Class rdf:about="&ensembl;non_coding">
+        <rdfs:label xml:lang="en">non_coding</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Transcript which is known from the literature to not be protein coding.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/non_stop_decay -->
+
+    <owl:Class rdf:about="&ensembl;non_stop_decay">
+        <rdfs:label xml:lang="en">non_stop_decay</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Transcripts that have polyA features (including signal) without a prior stop codon in the CDS, i.e. a non-genomic polyA tail attached directly to the CDS without 3&#39; UTR. These transcripts are subject to degradation.</terms:description>
     </owl:Class>
     
 
@@ -303,6 +677,86 @@
     <owl:Class rdf:about="&ensembl;nonsense_mediated_decay">
         <rdfs:label>nonsense mediated decay</rdfs:label>
         <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>If the coding sequence (following the appropriate reference) of a transcript finishes &gt;50bp from a downstream splice site then it is tagged as NMD. If the variant does not cover the full reference coding sequence then it is annotated as NMD if NMD is unavoidable i.e. no matter what the exon structure of the missing portion is the transcript will be subject to NMD.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/polymorphic_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;polymorphic_pseudogene">
+        <rdfs:label xml:lang="en">polymorphic_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;pseudogene"/>
+        <terms:description>Pseudogene owing to a SNP/DIP but in other individuals/haplotypes/strains the gene is translated.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/processed_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;processed_pseudogene">
+        <rdfs:label xml:lang="en">processed_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;pseudogene"/>
+        <terms:description>Pseudogene that lack introns and is thought to arise from reverse transcription of mRNA followed by reinsertion of DNA into the genome.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/processed_transcript -->
+
+    <owl:Class rdf:about="&ensembl;processed_transcript">
+        <rdfs:label xml:lang="en">processed_transcript</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Doesn&#39;t contain an ORF.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/protein -->
+
+    <owl:Class rdf:about="&ensembl;protein">
+        <rdfs:label xml:lang="en">protein</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>A protein is an organic polymer that is composed of one or more linear polymers of amino acids.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/protein_coding -->
+
+    <owl:Class rdf:about="&ensembl;protein_coding">
+        <rdfs:label xml:lang="en">protein_coding</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Contains an open reading frame (ORF).</terms:description>
+        <resource:equivalentTo rdf:resource="&resource;SIO_000985"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;pseudogene">
+        <rdfs:label xml:lang="en">pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Have homology to proteins but generally suffer from a disrupted coding sequence and an active homologous gene can be found at another locus. Sometimes these entries have an intact coding sequence or an open but truncated ORF, in which case there is other evidence used (for example genomic polyA stretches at the 3&#39; end) to classify them as a pseudogene. Can be further classified as one of the following.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/rRNA -->
+
+    <owl:Class rdf:about="&ensembl;rRNA">
+        <rdfs:label xml:lang="en">rRNA</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNA"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/rRNA_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;rRNA_pseudogene">
+        <rdfs:label xml:lang="en">rRNA_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNAs_pseudogene"/>
     </owl:Class>
     
 
@@ -312,6 +766,142 @@
     <owl:Class rdf:about="&ensembl;retained_intron">
         <rdfs:label>retained intron</rdfs:label>
         <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Alternatively spliced transcript believed to contain intronic sequence relative to other, coding, variants.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/retrotransposed -->
+
+    <owl:Class rdf:about="&ensembl;retrotransposed">
+        <rdfs:label xml:lang="en">retrotransposed</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Pseudogene owing to a reverse transcribed and re-inserted sequence.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/scRNA_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;scRNA_pseudogene">
+        <rdfs:label xml:lang="en">scRNA_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNAs_pseudogene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/sense_intronic -->
+
+    <owl:Class rdf:about="&ensembl;sense_intronic">
+        <rdfs:label xml:lang="en">sense_intronic</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Long non-coding transcript in introns of a coding gene that does not overlap any exons.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/sense_overlapping -->
+
+    <owl:Class rdf:about="&ensembl;sense_overlapping">
+        <rdfs:label xml:lang="en">sense_overlapping</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>Long non-coding transcript that contains a coding gene in its intron on the same strand.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/snRNA -->
+
+    <owl:Class rdf:about="&ensembl;snRNA">
+        <rdfs:label xml:lang="en">snRNA</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNA"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/snRNA_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;snRNA_pseudogene">
+        <rdfs:label xml:lang="en">snRNA_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNAs_pseudogene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/snoRNA -->
+
+    <owl:Class rdf:about="&ensembl;snoRNA">
+        <rdfs:label xml:lang="en">snoRNA</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNA"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/snoRNA_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;snoRNA_pseudogene">
+        <rdfs:label xml:lang="en">snoRNA_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNAs_pseudogene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/tRNA_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;tRNA_pseudogene">
+        <rdfs:label xml:lang="en">tRNA_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;Non-coding_RNAs_pseudogene"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/transcribed_processed_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;transcribed_processed_pseudogene">
+        <rdfs:label xml:lang="en">transcribed_processed_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;pseudogene"/>
+        <terms:description>Pseudogene where protein homology or genomic structure indicates a pseudogene, but the presence of locus-specific transcripts indicates expression.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/transcribed_unprocessed_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;transcribed_unprocessed_pseudogene">
+        <rdfs:label xml:lang="en">transcribed_unprocessed_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;pseudogene"/>
+        <terms:description>Pseudogene where protein homology or genomic structure indicates a pseudogene, but the presence of locus-specific transcripts indicates expression.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/transcript -->
+
+    <owl:Class rdf:about="&ensembl;transcript">
+        <rdfs:label xml:lang="en">transcript</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;EnsemblFeature"/>
+        <terms:description>An RNA transcript is an RNA molecule that is produced from transcription of a nucleic acid template.</terms:description>
+        <resource:equivalentTo rdf:resource="&resource;SIO_010450"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/unitary_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;unitary_pseudogene">
+        <rdfs:label xml:lang="en">unitary_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;pseudogene"/>
+        <terms:description>A species specific unprocessed pseudogene without a parent gene, as it has an active orthologue in another species.</terms:description>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl/unprocessed_pseudogene -->
+
+    <owl:Class rdf:about="&ensembl;unprocessed_pseudogene">
+        <rdfs:label xml:lang="en">unprocessed_pseudogene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ensembl;pseudogene"/>
+        <terms:description>Pseudogene that can contain introns since produced by gene duplication.</terms:description>
     </owl:Class>
 </rdf:RDF>
 
