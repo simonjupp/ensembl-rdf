@@ -73,8 +73,8 @@ PDB	1AU7	pdb
 PHI	PHI:2322				1	
 PlantGDB_PUT	PUT-157a-Populus_trichocarpa-7958				1	
 PO	PO:0001185	po	http://purl.obolibrary.org/obo/			s/PO:/PO_/
-protein_id	AAC51247	insdc		http://rdf.ebi.ac.uk/resource/ensembl/NucleotideSequenceDatabase		
-protein_id_predicted	CAF91510	insdc		http://rdf.ebi.ac.uk/resource/ensembl/NucleotideSequenceDatabase		
+protein_id	AAC51247	insdc		http://rdf.ebi.ac.uk/terms/ensembl/NucleotideSequenceDatabase		
+protein_id_predicted	CAF91510	insdc		http://rdf.ebi.ac.uk/terms/ensembl/NucleotideSequenceDatabase		
 PUBMED	10366627	pubmed				
 Reactome	REACT_71	reactome				
 RefSeq_dna	NM_001179183	refseq				

@@ -114,6 +114,9 @@ open OUT, ">$outfile" || die "Can't open out file $outfile\n";
 # common prefixes used
 my %prefix = (
   ensembl => 'http://rdf.ebi.ac.uk/resource/ensembl/',
+  transcript => 'http://rdf.ebi.ac.uk/resource/ensembl.transcript/',
+  protein => 'http://rdf.ebi.ac.uk/resource/ensembl.protein/',
+  exon => 'http://rdf.ebi.ac.uk/resource/ensembl.exon/',
   term => 'http://rdf.ebi.ac.uk/terms/ensembl/',
   rdfs => 'http://www.w3.org/2000/01/rdf-schema#',
   sio => 'http://semanticscience.org/resource/',
@@ -217,9 +220,9 @@ while (my $gene = shift @$genes) {
       triple('ensembl:'.$gene->stable_id, 'dc:description', '"'.escape($gene->description).'"');
   }
 
-  dump_identifers_mapping($gene);
-  dump_feature($gene);
-  dump_synonyms($gene);
+  dump_identifers_mapping($gene, 'ensembl');
+  dump_feature($gene, 'ensembl');
+  dump_synonyms($gene, 'ensembl');
   
   # relate gene to its taxon
   taxonTriple('ensembl:'.$gene->stable_id);
@@ -227,30 +230,28 @@ while (my $gene = shift @$genes) {
   # loop through the transcripts
   foreach my $transcript (@trans) {
       # transcripts are transcribed from a gene 
-      triple( 'ensembl:'.$transcript->stable_id, 'obo:SO_transcribed_from', 'ensembl:'.$gene->stable_id);
-      dump_identifers_mapping($transcript);
+      triple( 'transcript:'.$transcript->stable_id, 'obo:SO_transcribed_from', 'ensembl:'.$gene->stable_id);
+      dump_identifers_mapping($transcript, 'transcript');
 
-      taxonTriple('ensembl:'.$transcript->stable_id);
+#      taxonTriple('transcript:'.$transcript->stable_id);
       
       # type the transcript using SO again
-      triple( 'ensembl:'.$transcript->stable_id, 'rdfs:subClassOf', 'obo:SO_0000673');
-      triple( 'ensembl:'.$transcript->stable_id, 'a', 'term:transcript');
-#      triple( 'ensembl:'.$transcript->stable_id, 'dc:identifier', '"'.$transcript->stable_id.'"');
-      triple( 'ensembl:'.$transcript->stable_id, 'rdfs:label', ($transcript->external_name)? '"'.$transcript->external_name.'"':'"'.$transcript->display_id.'"');
+      triple( 'transcript:'.$transcript->stable_id, 'rdfs:subClassOf', 'obo:SO_0000673');
+      triple( 'transcript:'.$transcript->stable_id, 'a', 'term:transcript');
+      triple( 'transcript:'.$transcript->stable_id, 'rdfs:label', ($transcript->external_name)? '"'.$transcript->external_name.'"':'"'.$transcript->display_id.'"');
 
       # dump the features
-      dump_feature($transcript);
+      dump_feature($transcript, 'transcript');
       
       # if the transcript encodes a protein via translation 
       if ($transcript->translation) {
 	  my $trans = $transcript->translation;
-	  triple('ensembl:'.$transcript->stable_id, 'obo:SO_translates_to', 'ensembl:'.$trans->stable_id);
-	  triple('ensembl:'.$trans->stable_id, 'rdfs:subClassOf', 'obo:SO_0000104');
-	  triple('ensembl:'.$trans->stable_id, 'a', 'term:protein');
-	  #triple('ensembl:'.$trans->stable_id, 'dc:identifier', '"'.$trans->stable_id.'"' );
-	  triple('ensembl:'.$trans->stable_id, 'rdfs:label', '"'.$trans->display_id.'"');
-	  dump_identifers_mapping($trans);
-	  taxonTriple('ensembl:'.$trans->stable_id);
+	  triple('transcript:'.$transcript->stable_id, 'obo:SO_translates_to', 'protein:'.$trans->stable_id);
+	  triple('protein:'.$trans->stable_id, 'rdfs:subClassOf', 'obo:SO_0000104');
+	  triple('protein:'.$trans->stable_id, 'a', 'term:protein');
+	  triple('protein:'.$trans->stable_id, 'dc:identifier', '"'.$trans->stable_id.'"' );
+	  triple('protein:'.$trans->stable_id, 'rdfs:label', '"'.$trans->display_id.'"');
+	  dump_identifers_mapping($trans, 'protein');
       }
       
       # get the exons for the transcript
@@ -264,25 +265,23 @@ while (my $gene = shift @$genes) {
       foreach my $exon (@exons) {
 	  
 	  # exon type of SO exon, both gene and transcript are linked via has part
-	  triple('ensembl:'.$exon->stable_id,'rdfs:subClassOf','obo:SO_0000147');
-	  triple('ensembl:'.$exon->stable_id,'a','term:exon');
-	  #triple('ensembl:'.$exon->stable_id,'dc:identifier', '"'.$exon->stable_id.'"');
-	  triple('ensembl:'.$exon->stable_id, 'rdfs:label', '"'.$exon->display_id.'"');
+	  triple('exon:'.$exon->stable_id,'rdfs:subClassOf','obo:SO_0000147');
+	  triple('exon:'.$exon->stable_id,'a','term:exon');
+	  triple('exon:'.$exon->stable_id, 'rdfs:label', '"'.$exon->display_id.'"');
 	  
-	  dump_identifers_mapping($exon);
-	  taxonTriple('ensembl:'.$exon->stable_id);
+	  dump_identifers_mapping($exon, 'exon');
 
 	  # we assert that both the gene and the transcript have a part that is the exon
 	  # The exon can refer to both the part on the gene and the part on the transcript 
-	  triple('ensembl:'.$transcript->stable_id, 'obo:SO_has_part', 'ensembl:'.$exon->stable_id);
-	  triple('ensembl:'.$gene->stable_id, 'obo:SO_has_part', 'ensembl:'.$exon->stable_id);
+	  triple('transcript:'.$transcript->stable_id, 'obo:SO_has_part', 'exon:'.$exon->stable_id);
+	  triple('ensembl:'.$gene->stable_id, 'obo:SO_has_part', 'exon:'.$exon->stable_id);
 	  
 	  # we add some triple to support querying for order of exons
-	  triple('ensembl:'.$transcript->stable_id, 'sio:SIO_000974',  u($prefix{ensembl}.$transcript->stable_id.'#Exon_'.$position));
-	  triple('ensembl:'.$transcript->stable_id.'#Exon_'.$position,  'rdfs:subClassOf', 'sio:SIO_001261');
-	  triple('ensembl:'.$transcript->stable_id.'#Exon_'.$position, 'sio:SIO_000628', 'ensembl:'.$exon->stable_id);
-	  triple('ensembl:'.$transcript->stable_id.'#Exon_'.$position, 'sio:SIO_000300', $position);
-	  dump_feature($exon);
+	  triple('transcript:'.$transcript->stable_id, 'sio:SIO_000974',  u($prefix{transcript}.$transcript->stable_id.'#Exon_'.$position));
+	  triple('transcript:'.$transcript->stable_id.'#Exon_'.$position,  'rdfs:subClassOf', 'sio:SIO_001261');
+	  triple('transcript:'.$transcript->stable_id.'#Exon_'.$position, 'sio:SIO_000628', 'exon:'.$exon->stable_id);
+	  triple('transcript:'.$transcript->stable_id.'#Exon_'.$position, 'sio:SIO_000300', $position);
+	  dump_feature($exon, 'exon');
 	  $position++;
       }
   }
@@ -309,7 +308,7 @@ sub dump_karyotype {
 	    my $bandUri = $prefix{ensembl}.$stable_id;
 	    triple('ensembl:'.$feature->stable_id, 'sio:SIO_000061', u($bandUri));
 	    if (!$bandUris{$bandUri}) {
-		dump_feature($band, $stable_id);
+		dump_feature($band, 'ensembl', $stable_id);
 		triple(u($bandUri), 'rdf:type', u($prefix{term}.'CytogeneticBand'));	    
 		triple(u($bandUri), 'rdfs:label', '"'.${common_name}.' cytogenetic band '.$slice->seq_region_name().$band->name().'"');	    
 		$bandUris{$bandUri}  = 1;
@@ -321,16 +320,18 @@ sub dump_karyotype {
 sub dump_identifers_mapping {
 
     my $feature = shift;
+    my $namespace = shift;
     my $db = 'ensembl';
     if ($genome) {
 	$db = $db.'.'.$genome;
     }
-    triple('ensembl:'.$feature->stable_id, 'rdfs:seeAlso', u($prefix{identifiers}.$db.'/'.$feature->stable_id));
+    triple($namespace.":".$feature->stable_id(), 'rdfs:seeAlso', u($prefix{identifiers}.$db.'/'.$feature->stable_id()));
 	  
 }
 
 sub dump_feature {
     my $feature = shift;
+    my $namespace = shift;
     my $stable_id = shift;
     if (!$stable_id) {
 	$stable_id = $feature->stable_id;
@@ -379,7 +380,6 @@ sub dump_feature {
 	    }
 	    triple(u($featureUri), 'dc:identifier', '"'.$id.'"');
 	    triple($reference, 'sio:equivalentTo', u($featureUri));	
-	    taxonTriple(u($featureUri));
 	}
 	
 	taxonTriple($reference);
@@ -395,7 +395,7 @@ sub dump_feature {
     my $location = u($version_url.':'.$feature->start.'-'.$feature->end.':'.$feature->strand);
     my $beginUri = u($version_url.':'.$begin.':'.$feature->strand);
     my $endUri = u($version_url.':'.$end.':'.$feature->strand);
-    triple('ensembl:'.$stable_id, 'faldo:location', $location);
+    triple($namespace.':'.$stable_id, 'faldo:location', $location);
     triple($location, 'rdfs:label', '"'.$cs->name.' '.$feature->seq_region_name.':'.$feature->end.'-'.$feature->end.':'.$feature->strand.'"');
     triple($location, 'rdf:type', 'faldo:Region');
     triple($location, 'faldo:begin', $beginUri);
@@ -413,18 +413,18 @@ sub dump_feature {
     triple($endUri, 'faldo:position', $end);
     triple($endUri, 'faldo:reference', $reference);
 
-    triple('ensembl:'.$stable_id, 'dc:identifier', '"'.$stable_id.'"' );
+    triple($namespace.':'.$stable_id, 'dc:identifier', '"'.$stable_id.'"' );
 }
 
 sub dump_synonyms {
 
     my $feature = shift;
-    
+    my $namespace = shift;
     my $db_entries = $feature->get_all_DBEntries();
 
     foreach my $dbe ( @{$db_entries} ) {
 	foreach my $syn ( @{ $dbe->get_all_synonyms }) {	    
-	    triple('ensembl:'.$feature->stable_id, 'skos:altLabel', '"'.escape($syn).'"');
+	    triple($namespace.':'.$feature->stable_id, 'skos:altLabel', '"'.escape($syn).'"');
 	}
     }
 }

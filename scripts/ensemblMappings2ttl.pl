@@ -73,6 +73,9 @@ open OUT, ">$outfile" || die "Can't open out file $outfile\n";
 
 my %prefix = (
   ensembl => 'http://rdf.ebi.ac.uk/resource/ensembl/',
+  transcript => 'http://rdf.ebi.ac.uk/resource/ensembl.transcript/',
+  protein => 'http://rdf.ebi.ac.uk/resource/ensembl.protein/',
+  exon => 'http://rdf.ebi.ac.uk/resource/ensembl.exon/',
   dataset => 'http://rdf.ebi.ac.uk/dataset/ensembl/',
   term => 'http://rdf.ebi.ac.uk/terms/ensembl/',
   rdfs => 'http://www.w3.org/2000/01/rdf-schema#',
@@ -175,17 +178,17 @@ my $genes = $ga->fetch_all();
 my $count = 0;
 while (my $gene = shift @$genes) {
     $count++;
-    print_DBEntries( $gene->get_all_DBEntries() , $gene, undef, $gene->biotype());
+    print_DBEntries( $gene->get_all_DBEntries() , $gene, undef, $gene->biotype(), 'ensembl');
     
     foreach my $transcript ( @{ $gene->get_all_Transcripts() } ) {
-	print_DBEntries( $transcript->get_all_DBEntries() , $gene, 'INFERRED_FROM_TRANSCRIPT', $gene->biotype());
-	print_DBEntries( $transcript->get_all_DBEntries() , $transcript,  undef, "transcript");
+	print_DBEntries( $transcript->get_all_DBEntries() , $gene, 'INFERRED_FROM_TRANSCRIPT', $gene->biotype(), 'ensembl');
+	print_DBEntries( $transcript->get_all_DBEntries() , $transcript,  undef, "transcript", "transcript");
 #	print_Probe_Features ($transcript);
 	
 	if ( defined $transcript->translation() ) {
 	    my $translation = $transcript->translation();
 	    print_DBEntries( $translation->get_all_DBEntries() , $gene, 'INFERRED_FROM_TRANSLATION', $gene->biotype());
-	    print_DBEntries( $translation->get_all_DBEntries(), $translation, undef,  "protein");
+	    print_DBEntries( $translation->get_all_DBEntries(), $translation, undef, "protein", "protein");
 	}
     }
   last if ($limit && $count == $limit);
@@ -204,7 +207,6 @@ my %linksets;
 while ( my ($type, $nameHash) = each(%ensemblSources) ) {
     
     while ( my ($objectName, $relhash) = each(%$nameHash) ) {
-	next if ($objectName ne "Uniprot/SPTREMBL");
 	while ( my ($rel, $subjectNameHash) = each(%$relhash) ) {	
 	    while ( my ($subjectName, $count) = each(%$subjectNameHash) ) {	
 		print SRCOUT "${objectName}\t${type}\t${rel}\t${subjectName}\t${count}\n";
@@ -299,6 +301,7 @@ sub print_DBEntries
     my $feature = shift;
     my $rel = shift;
     my $biotype = shift;
+    my $namespace = shift;
 
     foreach my $dbe ( @{$db_entries} ) {
 
@@ -309,7 +312,7 @@ sub print_DBEntries
 	my $id = $dbe->primary_id();
 	my $desc = $dbe->description();
 
-	my $ensemblUri = $prefix{ensembl}.$feature->stable_id(); 
+	my $ensemblUri = $prefix{$namespace}.$feature->stable_id(); 
 	if (!$rel) {
 	    $rel = $dbe->info_type();
 	}
@@ -332,7 +335,7 @@ sub print_DBEntries
 	    push @xrefUris, $dbname2base{$name}.$id;
 	}
 	
-	# crete a type for the xrefs
+	# create a type for the xrefs
 	if ($dbname2type{$name}) {
 	    $xrefTypeUri = $dbname2type{$name};
 	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'term:EnsemblExternalDBEntry');
