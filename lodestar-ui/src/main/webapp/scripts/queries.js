@@ -73,10 +73,9 @@ var exampleQueries = [
                  " # query human data only\n" +
                  " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
                  "  ensembl:ENST00000380152 obo:SO_translates_to ?peptide .\n" +
-                 "  ?peptide rdfs:subClassOf ?type ;\n" +
-                 "           dcterms:identifier ?id ;\n" +
+                 "  ?peptide a ensemblterms:protein ;\n" +
                  "           ?xrefRelationType ?xrefUri .\n" +
-                 "  ?xrefUri rdfs:subClassOf ?xrefType ;\n" +
+                 "  ?xrefUri a ?xrefType ;\n" +
                  "           rdfs:label ?xrefLabel .\n" +
                  "  VALUES ?xrefType {core:Reviewed_Protein core:Protein}\n" +
                  " }\n" +
@@ -87,7 +86,7 @@ var exampleQueries = [
         description: "Show all external database cross references for gene ENSG00000139618",
 
         query:           "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
-                         "SELECT DISTINCT ?id ?xrefRelationType ?xrefLabel ?xrefUri ?xrefType ?xrefLabel {\n" +
+                         "SELECT DISTINCT ?subject ?xrefRelationType ?xrefLabel ?xrefUri ?xrefType ?xrefLabel {\n" +
                          " # query human data only\n" +
                          " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
                          "  {\n" +
@@ -96,10 +95,9 @@ var exampleQueries = [
                          "    {?transcript obo:SO_transcribed_from ensembl:ENSG00000139618 .\n" +
                          "     ?transcript obo:SO_translates_to  ?subject .}\n" +
                          "  }\n" +
-                         "  ?subject rdfs:subClassOf ?type ;\n" +
-                         "           dcterms:identifier ?id ;\n" +
+                         "  ?subject a ?type ;\n" +
                          "           ?xrefRelationType ?xrefUri .\n" +
-                         "  ?xrefUri rdfs:subClassOf ?xrefType ;\n" +
+                         "  ?xrefUri a ?xrefType ;\n" +
                          "           rdfs:label ?xrefLabel .\n" +
                          "  ?xrefRelationType rdfs:subPropertyOf skos:related .\n" +
                          " }\n" +
@@ -111,7 +109,7 @@ var exampleQueries = [
         query:
             "SELECT DISTINCT ?gene ?id ?label ?typelabel ?desc ?reference ?begin ?end {\n" +
             " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/10090> {\n" +
-            "  ?gene rdfs:subClassOf ?type ;\n" +
+            "  ?gene a ?type ;\n" +
             "        rdfs:label ?label ;\n" +
             "        dcterms:description ?desc ;\n" +
            	"        dcterms:identifier ?id ;\n" +
@@ -128,7 +126,7 @@ var exampleQueries = [
             " ?reference rdfs:subClassOf <http://rdf.ebi.ac.uk/resource/ensembl/10090/chromosome:11>\n" +
             " FILTER (?begin >= 101100523 && ?end <= 101190725 )\n" +
             " }\n" +
-            " ?type rdfs:label ?typelabel .\n" +
+            " OPTIONAL {?type rdfs:label ?typelabel}\n" +
             "}"
     },
     {
@@ -151,15 +149,14 @@ var exampleQueries = [
         query:
                  "PREFIX core: <http://purl.uniprot.org/core/>\n" +
                  "PREFIX taxon:<http://purl.uniprot.org/taxonomy/>\n" +
-                 "SELECT DISTINCT ?ensemblprotein ?xrefUri ?xrefLabel ?substitution ?text ?citation {\n" +
+                 "SELECT DISTINCT ?peptide ?xrefUri ?xrefLabel ?substitution ?text ?citation {\n" +
                  " # query human data only\n" +
                  " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
                  "  ?transcript obo:SO_transcribed_from ensembl:ENSG00000172936 .\n" +
                  "  ?transcript obo:SO_translates_to ?peptide .\n" +
-                 "  ?peptide rdfs:subClassOf ?type ;\n" +
-                 "           dcterms:identifier ?ensemblprotein ;\n" +
+                 "  ?peptide a ensemblterms:protein ;\n" +
                  "           ?xrefRelationType ?xrefUri .\n" +
-                 "  ?xrefUri rdfs:subClassOf core:Reviewed_Protein ;\n" +
+                 "  ?xrefUri a core:Reviewed_Protein ;\n" +
                  "           rdfs:label ?xrefLabel .\n" +
                  "  }\n" +
                  "  SERVICE <http://beta.sparql.uniprot.org/sparql> {\n" +
