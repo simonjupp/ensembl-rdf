@@ -69,7 +69,7 @@ var exampleQueries = [
         shortname : "Query 3",
         description: "Show proteins translated from ENST00000380152 that map to reviewed (SwissProt) and unreviewed (TrEMBL) UniProt entries",
         query:   "PREFIX core: <http://purl.uniprot.org/core/>\n" +
-                 "SELECT DISTINCT ?id ?xrefRelationType ?xrefLabel ?xrefUri ?xrefType  {\n" +
+                 "SELECT DISTINCT ?peptide ?xrefRelationType ?xrefLabel ?xrefUri ?xrefType  {\n" +
                  " # query human data only\n" +
                  " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
                  "  ensembl:ENST00000380152 obo:SO_translates_to ?peptide .\n" +
