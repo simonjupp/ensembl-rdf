@@ -39,10 +39,11 @@ var exampleQueries = [
         shortname : "Query 2",
         description: "Show ordered exons with their length for transcript ENST00000380152",
         query:
+            "\n" +
             "SELECT DISTINCT ?exon ?id ?referenceLabel ?begin ?end ?strand {\n\n" +
             " # query human data only\n" +
             " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
-            "   ensembl:ENST00000380152 obo:SO_has_part ?exon;\n" +
+            "   ensembltranscript:ENST00000380152 obo:SO_has_part ?exon;\n" +
             "                           sio:SIO_000974 ?orderedPart .\n" +
             "   ?exon dcterms:identifier ?id .\n" +
             "   # we include an explicit exon order\n" +
@@ -73,6 +74,7 @@ var exampleQueries = [
                  " # query human data only\n" +
                  " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
                  "  ensembl:ENST00000380152 obo:SO_translates_to ?peptide .\n" +
+                 "  ?peptide  dcterms:identifier ?id .\n" +
                  "  ?peptide a ensemblterms:protein ;\n" +
                  "           ?xrefRelationType ?xrefUri .\n" +
                  "  ?xrefUri a ?xrefType ;\n" +
