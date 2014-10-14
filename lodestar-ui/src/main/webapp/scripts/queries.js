@@ -73,7 +73,7 @@ var exampleQueries = [
                  "SELECT DISTINCT ?peptide ?xrefRelationType ?xrefLabel ?xrefUri ?xrefType  {\n" +
                  " # query human data only\n" +
                  " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
-                 "  ensembl:ENST00000380152 obo:SO_translates_to ?peptide .\n" +
+                 "  ensembltranscript:ENST00000380152 obo:SO_translates_to ?peptide .\n" +
                  "  ?peptide  dcterms:identifier ?id .\n" +
                  "  ?peptide a ensemblterms:protein ;\n" +
                  "           ?xrefRelationType ?xrefUri .\n" +
