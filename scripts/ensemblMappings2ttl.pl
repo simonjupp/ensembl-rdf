@@ -187,7 +187,7 @@ while (my $gene = shift @$genes) {
 	
 	if ( defined $transcript->translation() ) {
 	    my $translation = $transcript->translation();
-	    print_DBEntries( $translation->get_all_DBEntries() , $gene, 'INFERRED_FROM_TRANSLATION', $gene->biotype());
+	    print_DBEntries( $translation->get_all_DBEntries() , $gene, 'INFERRED_FROM_TRANSLATION', $gene->biotype(), 'ensembl');
 	    print_DBEntries( $translation->get_all_DBEntries(), $translation, undef, "protein", "protein");
 	}
     }
