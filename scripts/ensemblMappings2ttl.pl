@@ -172,11 +172,11 @@ close DBNAME;
 
 my %relations;
 my %ensemblSources;
-my $genes = $ga->fetch_all();
-#my $gene = $ga->fetch_by_stable_id ('ENSG00000105393');
+#my $genes = $ga->fetch_all();
+my $gene = $ga->fetch_by_stable_id ('ENSG00000157764');
 #print "GENE ", $gene->stable_id(), "\n";
 my $count = 0;
-while (my $gene = shift @$genes) {
+#while (my $gene = shift @$genes) {
     $count++;
     print_DBEntries( $gene->get_all_DBEntries() , $gene, undef, $gene->biotype(), 'ensembl');
     
@@ -191,8 +191,8 @@ while (my $gene = shift @$genes) {
 	    print_DBEntries( $translation->get_all_DBEntries(), $translation, undef, "protein", "protein");
 	}
     }
-  last if ($limit && $count == $limit);
-}
+#  last if ($limit && $count == $limit);
+#}
 
 # print relation assertions as sub property of skos:related
 #open RELOUT, ">${path}${species}_xref_relations.txt" || die "can't open ${species} xref relations\n";
@@ -228,7 +228,7 @@ while ( my ($type, $nameHash) = each(%ensemblSources) ) {
 		printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{void}."linkPredicate"), u($prefix{term}.$rel);
 		printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{void}."subjectTarget"), u($subjectPartitionUri);
 		printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{void}."objectTarget"), u($objectPartitionUri);
-		printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{void}."triples"), $count;
+#		printf LINKSETOUT "%s %s %s .\n",u($linksetUri), u($prefix{void}."triples"), $count;
 
 		# if inferred link, link to provenance
 		if ($rel =~/^INFERRED_FROM/) {
