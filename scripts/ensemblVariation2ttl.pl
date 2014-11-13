@@ -84,6 +84,7 @@ my $help = 0;
 #"ensembldb.ensembl.org";
 my $host = "mysql-ensembl-mirror.ebi.ac.uk"; 
 my $port = "4240";
+my $user = "anonymous";
 my $genome = "";
 my $zooma = 'http://www.ebi.ac.uk/fgpt/zooma/v2/api';
 
@@ -96,6 +97,7 @@ GetOptions (
     'limit=i' => \$limit,
     'host=s' => \$host,
     'port=i' => \$port,
+    'user=s' => \$user,
     'genome=s' => \$genome,
     'help|?' => \$help,
     'zooma=s' => \$zooma,
@@ -109,13 +111,13 @@ if (!$species || !$version) {
 }
 print STDOUT "Using Ensembl variation DB $species version $version\n";
 
-my $outfile = ${species}.'_'.${version}.'_variation.ttl';
+my $outfile = ${species}.'_'.${version}.'_variation.ttl.gz';
 if ($path) {
     $outfile = $path."/".$outfile;
 }
 
 # create the output file
-open OUT, ">$outfile" || die "Can't open out file $outfile\n";
+open OUT, " | gzip -c >$outfile" || die "Can't open out file $outfile\n";
 
 # common prefixes used
 my %prefix = (
@@ -148,7 +150,7 @@ Bio::EnsEMBL::Registry->set_reconnect_when_lost(1);
 Bio::EnsEMBL::Registry->load_registry_from_db(
   -host => $host,
 #  -host => 'ensembldb.ensembl.org',
-  -user => 'anonymous',
+  -user => $user,
   -port => $port,
   -db_version => $version,
 );
@@ -207,176 +209,204 @@ my $http = LWP::UserAgent->new();
 $http->default_header( 'ContentType' => 'application/json' );
 
 
-# get an iterator over the variants
-# blindly assume we can just fetch sequential dbIDs starting from 1
+# find the max variation ID
+# my $sth = $va->db->dbc->prepare(qq{SELECT max(variation_id) FROM variation});
+# $sth->execute();
+#
+# my $max_id;
+# $sth->bind_col(1, \$max_id);
+# $sth->fetch();
+# $sth->finish();
+#
+# my $batch_size = 100;
+# my $from_id = 1;
+#
+# while($from_id <= $max_id) {
+#   my $to_id = $from_id + ($batch_size - 1);
+#
+#   print "Dumping $from_id to $to_id\n";
+#
+#   my $vi = $va->fetch_Iterator_by_dbID_list([$from_id..$to_id]);
+  # $from_id += $batch_size;
+open IN, 'BRCA2_variation_ids.txt';
+my @ids;
+my $batch_size = 100;
 
-my $vi = $va->fetch_Iterator_by_dbID_list([695]);
-
-while(my $v = $vi->next()) {
-  $count++;
-  # last if $count > 1;
-  
-  my $vfs = $v->get_all_VariationFeatures;
-  my $first_vf = shift @{$vfs};
-  
-  my $vname = $v->name;
-  my $vf_subj = "$nspace:".uri_escape($vname);
-  
-  # dump names for the variant
-  triple($vf_subj, 'rdfs:label', l($vname));
-  triple($vf_subj, 'skos:altLabel', l($_)) for @{$v->get_all_synonyms};
-
-  # get SO class
-  my $class = $first_vf->class_SO_term;
-  my $ontoTypeId = getSOOntologyId($class);
-  if ($ontoTypeId) {
-    # create the gene as a sublclass of the type coming back from SO, usually protein coding. 
-    triple($vf_subj, 'rdfs:subClassOf', $ontoTypeId);
-  }
-  triple($vf_subj, 'a', 'term:'.$class);
-
-  # add source, clinical significance
-  triple($vf_subj, "$vpo:has_source", l($v->source));
-  triple($vf_subj, "$vpo:has_clinical_significance", l($_)) for @{$v->get_all_clinical_significance_states};
-
-
-  # add alleles
-  my $ac = 0;
-
-  foreach my $allele(split '/', $first_vf->allele_string) {
-      
-    # probably define this allele as a subject
-    # then we can assign more properties to it
-    # reference, ancestral, minor?
-    my $allele_subj = $nspace.':'.$vname.'#'.$allele;
-  
-    triple($vf_subj, "$vpo:has_allele", $allele_subj);
-  
-    triple($allele_subj, 'rdfs:label', l("$vname allele $allele"));
-  
-    # is reference?
-    if($ac == 0) {
-      triple($allele_subj, "a", "$vpo:reference_allele", );
-    }
-  
-    # is ancestral?
-    if($v->ancestral_allele eq $allele) {
-      triple($allele_subj, "a", "$vpo:ancestral_allele");
-    }
-  
-    # is minor?
-    if($v->minor_allele eq $allele) {
-      triple($allele_subj, "a", "$vpo:minor_allele");
-    }
-  
-    # alleles also have a location since VFs can have more than one location
-  
-    $ac++;
-  }
-
-  foreach my $vf(@{$v->get_all_VariationFeatures}) {
-  
-    dump_feature($vf, $nspace, $vname);
-  
-    # get transcript variations
-    foreach my $tv(@{$vf->get_all_TranscriptVariations}) {
-      
-      # skip upstream/downstream ones for now
-      next unless $tv->cdna_start;
-    
-      # then get the specific transcript variation allele objects
-      # these are linked back to the variation feature object via the allele object
-      # created above
-      foreach my $tva(@{$tv->get_all_alternate_TranscriptVariationAlleles}) {
-        my $allele = uri_escape($tva->variation_feature_seq);
-        my $allele_subj = $nspace.':'.$vname.'#'.$allele;
-      
-        my $tva_subj = $nspace.':'.$tv->transcript->stable_id.'_'.$vname.'#'.$allele;
-      
-        # link the allele to the tva
-        triple($allele_subj, "$vpo:has_consequence", $tva_subj);
-        
-        # link the transcript to the tva
-        triple($tva_subj, 'obo:so_overlaps', 'ensembl:'.$tv->transcript->stable_id);
-      
-        # consequence types
-        foreach my $csq(map {$_->SO_term} @{$tva->get_all_OverlapConsequences}) {
-  
-          # get SO class
-          my $ontoTypeId = getSOOntologyId($csq);
-          if ($ontoTypeId) {
-            # create the gene as a sublclass of the type coming back from SO, usually protein coding. 
-            triple($tva_subj, 'rdfs:subClassOf', $ontoTypeId);
-          }
-          triple($tva_subj, 'a', 'term:'.$csq);
-        }
-      
-        # HGVS names
-        triple($tva_subj, "$vpo:has_HGVS_transcript_name", l($tva->hgvs_transcript)) if $tva->hgvs_transcript;
-        triple($tva_subj, "$vpo:has_HGVS_protein_name", l($tva->hgvs_protein)) if $tva->hgvs_protein;
-      
-        # SIFT, PolyPhen
-        foreach my $tool(qw(SIFT PolyPhen)) {
-          my $pred_method = lc($tool).'_prediction';
-          my $score_method = lc($tool).'_score';
-        
-          if($tva->$pred_method) {
-            triple($tva_subj, "$vpo:has_$tool\_prediction", l($tva->$pred_method));
-            triple($tva_subj, "$vpo:has_$tool\_prediction", l($tva->$score_method).'^^xsd:float');
-          }
-        }
-      
-        # amino acids
-        if(my $pep = $tva->pep_allele_string) {
-          my ($r, $a) = split '/', $pep;
-          triple($tva_subj, "$vpo:has_reference_peptide_sequence", l($r));
-          triple($tva_subj, "$vpo:has_alternate_peptide_sequence", l($a)) if $a;
-        }
-      }
-    }
-  }
-
-  # get phenotypes
-  foreach my $pf(@{$pfa->fetch_all_by_Variation($v)}) {
-    
-    my $phen = $pf->phenotype;
-    my $desc = $phen->description;
- 
-    my $response = $http->get($zooma.'/summaries/search?query='.$desc);
-    
-
-    $DB::single = 1;
-  
-    die "ERROR: Failed to talk to Zooma\n" unless $response->is_success;
-    my $match;
-    
-    my $content = $response->decoded_content;
-    if(length $content) {
-      my $hash = decode_json($content);
-      
-      my $best_score = 0;
-      my $best_count = 0;
-      
-      foreach my $res(@{$hash->{result}}) {
-        if($res->{score} > $best_score) {
-          $best_score = $res->{score};
-          $best_count = 1;
-        }
-        elsif($res->{score} == $best_score) {
-          $best_count++;
-        }
-      }
-      
-      if($best_count == 1) {
-        my ($result) = grep {$_->{score} == $best_score} @{$hash->{result}};
-        
-        $match = (split(/\s+/, $result->{notable}->{name}))[-1];
-      }
-    }
-    
-    triple($vf_subj, "$vpo:has_phenotype_annotation", l($match || $desc));
-  }
+while(<IN>) {
+  chomp;
+  push @ids, $_ if /^\d+$/;
 }
+
+my $vi = $va->fetch_Iterator_by_dbID_list(\@ids);
+
+  while(my $v = $vi->next()) {
+    $count++;
+    # last if $count > 1;
+  
+    my $vfs = $v->get_all_VariationFeatures;
+    my $first_vf = shift @{$vfs};
+    
+    next unless $first_vf;
+  
+    my $vname = $v->name;
+    my $vf_subj = "$nspace:".uri_escape($vname);
+  
+    # dump names for the variant
+    triple($vf_subj, 'rdfs:label', l($vname));
+    triple($vf_subj, 'skos:altLabel', l($_)) for @{$v->get_all_synonyms};
+
+    # get SO class
+    my $class = $first_vf->class_SO_term;
+    my $ontoTypeId = getSOOntologyId($class);
+    if ($ontoTypeId) {
+      triple($vf_subj, 'a', $ontoTypeId);
+    }
+    # triple($vf_subj, 'a', 'term:'.$class);
+
+    # add source, clinical significance
+    triple($vf_subj, "$vpo:has_source", l($v->source));
+    triple($vf_subj, "$vpo:has_clinical_significance", l($_)) for @{$v->get_all_clinical_significance_states};
+
+
+    # add alleles
+    my $ac = 0;
+
+    foreach my $allele(split '/', $first_vf->allele_string) {
+      
+      # probably define this allele as a subject
+      # then we can assign more properties to it
+      # reference, ancestral, minor?
+      my $allele_subj = $nspace.':'.$vname.'#'.$allele;
+  
+      triple($vf_subj, "$vpo:has_allele", $allele_subj);
+  
+      triple($allele_subj, 'rdfs:label', l("$vname allele $allele"));
+  
+      # is reference?
+      if($ac == 0) {
+        triple($allele_subj, "a", "$vpo:reference_allele", );
+      }
+  
+      # is ancestral?
+      if($v->ancestral_allele eq $allele) {
+        triple($allele_subj, "a", "$vpo:ancestral_allele");
+      }
+  
+      # is minor?
+      if($v->minor_allele eq $allele) {
+        triple($allele_subj, "a", "$vpo:minor_allele");
+      }
+  
+      # alleles also have a location since VFs can have more than one location
+  
+      $ac++;
+    }
+
+    foreach my $vf(@{$v->get_all_VariationFeatures}) {
+  
+      dump_feature($vf, $nspace, $vname);
+  
+      # get transcript variations
+      foreach my $tv(@{$vf->get_all_TranscriptVariations}) {
+      
+        # skip upstream/downstream ones for now
+        next unless $tv->cdna_start;
+    
+        # then get the specific transcript variation allele objects
+        # these are linked back to the variation feature object via the allele object
+        # created above
+        foreach my $tva(@{$tv->get_all_alternate_TranscriptVariationAlleles}) {
+          my $allele = uri_escape($tva->variation_feature_seq);
+          my $allele_subj = $nspace.':'.$vname.'#'.$allele;
+      
+          my $tva_subj = $nspace.':'.$tv->transcript->stable_id.'_'.$vname.'#'.$allele;
+          
+          $DB::single = 1;
+      
+          # link the allele to the tva
+          triple($allele_subj, "$vpo:has_variant_effect", $tva_subj);
+        
+          # link the transcript to the tva
+          triple($tva_subj, 'obo:so_overlaps', 'transcript:'.$tv->transcript->stable_id);
+      
+          # consequence types
+          foreach my $csq(map {$_->SO_term} @{$tva->get_all_OverlapConsequences}) {
+  
+            # get SO class
+            my $ontoTypeId = getSOOntologyId($csq);
+            if ($ontoTypeId) {
+              triple($tva_subj, 'a', $ontoTypeId);
+            }
+            # triple($tva_subj, 'a', 'term:'.$csq);
+          }
+      
+          # HGVS names
+          triple($tva_subj, "$vpo:has_HGVS_transcript_name", l($tva->hgvs_transcript)) if $tva->{hgvs_transcript};
+          triple($tva_subj, "$vpo:has_HGVS_protein_name", l($tva->hgvs_protein)) if $tva->{hgvs_protein};
+      
+          # SIFT, PolyPhen
+          foreach my $tool(qw(SIFT PolyPhen)) {
+            my $pred_method = lc($tool).'_prediction';
+            my $score_method = lc($tool).'_score';
+        
+            if($tva->$pred_method) {
+              triple($tva_subj, "$vpo:has_$tool\_prediction", l($tva->$pred_method));
+              triple($tva_subj, "$vpo:has_$tool\_prediction", l($tva->$score_method).'^^xsd:float');
+            }
+          }
+      
+          # amino acids
+          if(my $pep = $tva->pep_allele_string) {
+            my ($r, $a) = split '/', $pep;
+            triple($tva_subj, "$vpo:has_reference_peptide_sequence", l($r));
+            triple($tva_subj, "$vpo:has_alternate_peptide_sequence", l($a)) if $a;
+          }
+        }
+      }
+    }
+
+    # get phenotypes
+    foreach my $pf(@{$pfa->fetch_all_by_Variation($v)}) {
+
+      my $phen = $pf->phenotype;
+      my $desc = $phen->description;
+      #
+      # my $response = $http->get($zooma.'/summaries/search?query='.$desc);
+      #
+      #
+      # $DB::single = 1;
+      #
+      # die "ERROR: Failed to talk to Zooma\n" unless $response->is_success;
+      my $match;
+    #
+    #   my $content = $response->decoded_content;
+    #   if(length $content) {
+    #     my $hash = decode_json($content);
+    #
+    #     my $best_score = 0;
+    #     my $best_count = 0;
+    #
+    #     foreach my $res(@{$hash->{result}}) {
+    #       if($res->{score} > $best_score) {
+    #         $best_score = $res->{score};
+    #         $best_count = 1;
+    #       }
+    #       elsif($res->{score} == $best_score) {
+    #         $best_count++;
+    #       }
+    #     }
+    #
+    #     if($best_count == 1) {
+    #       my ($result) = grep {$_->{score} == $best_score} @{$hash->{result}};
+    #
+    #       $match = (split(/\s+/, $result->{notable}->{name}))[-1];
+    #     }
+    #   }
+   
+      triple($vf_subj, "$vpo:has_phenotype_annotation", l($match || $desc));
+    }
+  }
+  #}
 
 print "Dumped triples for $count variants \n";
 
