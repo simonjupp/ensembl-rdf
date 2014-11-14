@@ -229,7 +229,7 @@ while($from_id <= $max_id) {
   print "Dumping $from_id to $to_id\n";
 
   my $vi = $va->fetch_Iterator_by_dbID_list([$from_id..$to_id]);
-  # $from_id += $batch_size;
+  $from_id += $batch_size;
 # open IN, 'BRCA2_variation_ids.txt';
 # my @ids;
 # my $batch_size = 100;
