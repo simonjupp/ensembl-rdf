@@ -72,6 +72,7 @@ use Bio::EnsEMBL::DBSQL::DBAdaptor;
 use URI::Escape;
 use JSON;
 use LWP::UserAgent;
+use Digest::MD5 qw(md5_hex);
 
 my $species = '';
 my $version = '';
@@ -137,6 +138,7 @@ my %prefix = (
   skos => 'http://www.w3.org/2004/02/skos/core#',
   identifiers => 'http://identifiers.org/',
   taxon => 'http://identifiers.org/taxonomy/',
+  oban => 'http://purl.org/oban/'
 );
 
 # create a map of prefixes for easy lookup
@@ -210,34 +212,34 @@ $http->default_header( 'ContentType' => 'application/json' );
 
 
 # find the max variation ID
-# my $sth = $va->db->dbc->prepare(qq{SELECT max(variation_id) FROM variation});
-# $sth->execute();
-#
-# my $max_id;
-# $sth->bind_col(1, \$max_id);
-# $sth->fetch();
-# $sth->finish();
-#
-# my $batch_size = 100;
-# my $from_id = 1;
-#
-# while($from_id <= $max_id) {
-#   my $to_id = $from_id + ($batch_size - 1);
-#
-#   print "Dumping $from_id to $to_id\n";
-#
-#   my $vi = $va->fetch_Iterator_by_dbID_list([$from_id..$to_id]);
-  # $from_id += $batch_size;
-open IN, 'BRCA2_variation_ids.txt';
-my @ids;
+my $sth = $va->db->dbc->prepare(qq{SELECT max(variation_id) FROM variation});
+$sth->execute();
+
+my $max_id;
+$sth->bind_col(1, \$max_id);
+$sth->fetch();
+$sth->finish();
+
 my $batch_size = 100;
+my $from_id = 1;
 
-while(<IN>) {
-  chomp;
-  push @ids, $_ if /^\d+$/;
-}
+while($from_id <= $max_id) {
+  my $to_id = $from_id + ($batch_size - 1);
 
-my $vi = $va->fetch_Iterator_by_dbID_list(\@ids);
+  print "Dumping $from_id to $to_id\n";
+
+  my $vi = $va->fetch_Iterator_by_dbID_list([$from_id..$to_id]);
+  # $from_id += $batch_size;
+# open IN, 'BRCA2_variation_ids.txt';
+# my @ids;
+# my $batch_size = 100;
+#
+# while(<IN>) {
+#   chomp;
+#   push @ids, $_ if /^\d+$/;
+# }
+#
+# my $vi = $va->fetch_Iterator_by_dbID_list(\@ids);
 
   while(my $v = $vi->next()) {
     $count++;
@@ -290,6 +292,9 @@ my $vi = $va->fetch_Iterator_by_dbID_list(\@ids);
       # is ancestral?
       if($v->ancestral_allele eq $allele) {
         triple($allele_subj, "a", "$vpo:ancestral_allele");
+      }
+      else {
+        triple($allele_subj, "a", "$vpo:derived_allele");
       }
   
       # is minor?
@@ -370,43 +375,44 @@ my $vi = $va->fetch_Iterator_by_dbID_list(\@ids);
 
       my $phen = $pf->phenotype;
       my $desc = $phen->description;
-      #
-      # my $response = $http->get($zooma.'/summaries/search?query='.$desc);
-      #
-      #
-      # $DB::single = 1;
-      #
-      # die "ERROR: Failed to talk to Zooma\n" unless $response->is_success;
       my $match;
-    #
-    #   my $content = $response->decoded_content;
-    #   if(length $content) {
-    #     my $hash = decode_json($content);
-    #
-    #     my $best_score = 0;
-    #     my $best_count = 0;
-    #
-    #     foreach my $res(@{$hash->{result}}) {
-    #       if($res->{score} > $best_score) {
-    #         $best_score = $res->{score};
-    #         $best_count = 1;
-    #       }
-    #       elsif($res->{score} == $best_score) {
-    #         $best_count++;
-    #       }
-    #     }
-    #
-    #     if($best_count == 1) {
-    #       my ($result) = grep {$_->{score} == $best_score} @{$hash->{result}};
-    #
-    #       $match = (split(/\s+/, $result->{notable}->{name}))[-1];
-    #     }
-    #   }
-   
-      triple($vf_subj, "$vpo:has_phenotype_annotation", l($match || $desc));
+      
+      # try and match to a term from zooma
+      # my $content = $response->decoded_content;
+      # if(length $content) {
+      #   my $hash = decode_json($content);
+      #
+      #   my $best_score = 0;
+      #   my $best_count = 0;
+      #
+      #   foreach my $res(@{$hash->{result}}) {
+      #     if($res->{score} > $best_score) {
+      #       $best_score = $res->{score};
+      #       $best_count = 1;
+      #     }
+      #     elsif($res->{score} == $best_score) {
+      #       $best_count++;
+      #     }
+      #   }
+      #
+      #   if($best_count == 1) {
+      #     my ($result) = grep {$_->{score} == $best_score} @{$hash->{result}};
+      #
+      #     $match = (split(/\s+/, $result->{notable}->{name}))[-1];
+      #   }
+      # }
+
+      # create an association subbject
+      $pf_subj = $nspace.':'.md5_hex($vname.$desc);
+      
+      triple($pf_subj, 'typeof', 'oban:association');
+      triple($pf_subj, 'oban:association_has_object_name', l($desc));
+      triple($pf_subj, 'oban:association_has_subject', $vf_subj);
+      
+      # triple($vf_subj, "oban:association", l($desc));
     }
   }
-  #}
+}
 
 print "Dumped triples for $count variants \n";
 
