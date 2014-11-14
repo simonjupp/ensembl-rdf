@@ -403,7 +403,7 @@ while($from_id <= $max_id) {
       # }
 
       # create an association subbject
-      $pf_subj = $nspace.':'.md5_hex($vname.$desc);
+      my $pf_subj = $nspace.':'.md5_hex($vname.$desc);
       
       triple($pf_subj, 'typeof', 'oban:association');
       triple($pf_subj, 'oban:association_has_object_name', l($desc));
