@@ -331,7 +331,7 @@ sub dump_identifers_mapping {
 # implement the SIO identifier type description see https://github.com/dbcls/bh14/wiki/Identifiers.org-working-document
     my $idorgtype = "http://idtype.identifiers.org/" . $db;
     triple (u($idorguri), 'a', u("http://identifiers.org/".$db));
-    print OUT u($idorguri) . " SIO:SIO_000671 " .  "[ a <".${idorgtype}.">; SIO:SIO_000300 \"".$feature->stable_id()."\"] .\n";
+    print OUT u($idorguri) . " sio:SIO_000671 " .  "[ a <".${idorgtype}.">; sio:SIO_000300 \"".$feature->stable_id()."\"] .\n";
 }
 
 sub dump_feature {

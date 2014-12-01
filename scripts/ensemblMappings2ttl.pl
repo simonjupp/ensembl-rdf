@@ -337,7 +337,7 @@ sub print_DBEntries
 	    # implement the SIO identifier type description see https://github.com/dbcls/bh14/wiki/Identifiers.org-working-document
 	    my $idorgtype = "http://idtype.identifiers.org/" . $dbname2short{$name};
 	    triple (u($idorguri), 'a', u("http://identifiers.org/".$dbname2short{$name}));
-	    print OUT u($idorguri) . " SIO:SIO_000671 " .  "[ a <".${idorgtype}.">; SIO:SIO_000300 \"$id\"] .\n";
+	    print OUT u($idorguri) . " sio:SIO_000671 " .  "[ a <".${idorgtype}.">; sio:SIO_000300 \"$id\"] .\n";
 	    
 	    
 	}
