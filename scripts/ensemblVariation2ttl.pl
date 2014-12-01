@@ -278,28 +278,28 @@ while($from_id <= $max_id) {
       # probably define this allele as a subject
       # then we can assign more properties to it
       # reference, ancestral, minor?
-      my $allele_subj = $nspace.':'.$vname.'#'.$allele;
+      my $allele_subj = $prefix{$nspace}.$vname.'#'.$allele;
   
-      triple($vf_subj, "$vpo:has_allele", $allele_subj);
+      triple($vf_subj, "$vpo:has_allele", u($allele_subj));
   
-      triple($allele_subj, 'rdfs:label', l("$vname allele $allele"));
+      triple(u($allele_subj), 'rdfs:label', l("$vname allele $allele"));
   
       # is reference?
       if($ac == 0) {
-        triple($allele_subj, "a", "$vpo:reference_allele", );
+        triple(u($allele_subj), "a", "$vpo:reference_allele", );
       }
   
       # is ancestral?
       if($v->ancestral_allele eq $allele) {
-        triple($allele_subj, "a", "$vpo:ancestral_allele");
+        triple(u($allele_subj), "a", "$vpo:ancestral_allele");
       }
       else {
-        triple($allele_subj, "a", "$vpo:derived_allele");
+        triple(u($allele_subj), "a", "$vpo:derived_allele");
       }
   
       # is minor?
       if($v->minor_allele eq $allele) {
-        triple($allele_subj, "a", "$vpo:minor_allele");
+        triple(u($allele_subj), "a", "$vpo:minor_allele");
       }
   
       # alleles also have a location since VFs can have more than one location
