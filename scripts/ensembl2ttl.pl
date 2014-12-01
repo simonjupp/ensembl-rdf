@@ -189,7 +189,7 @@ if ($virtgraph) {
     print GRAPH $graphUri;
     close GRAPH;
     # make the species graph a subgraph of the version graph
-    triple (u($graphUri), '<http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf>', u($versionGraphUri)); 
+    triple (u($graphUri), '<http://rdfs.org/ns/void#subset>', u($versionGraphUri)); 
 }
 
 # start to process all genes
@@ -209,8 +209,8 @@ while (my $gene = shift @$genes) {
   # most are protein coding, but we also have nonsence_mediated_decay and miscmRNA that don't map 
   my $ontoTypeId = getSOOntologyId($gene->biotype());
   if ($ontoTypeId) {
-      # create the gene as a sublclass of the type coming back from SO, usually protein coding. 
-      triple('ensembl:'.$gene->stable_id, 'rdfs:subClassOf', $ontoTypeId );
+      # create the gene with a type coming back from SO, usually protein coding. 
+      triple('ensembl:'.$gene->stable_id, 'a', $ontoTypeId );
   }
   triple('ensembl:'.$gene->stable_id, 'a', 'term:'.$gene->biotype() );
   
@@ -236,8 +236,8 @@ while (my $gene = shift @$genes) {
 #      taxonTriple('transcript:'.$transcript->stable_id);
       
       # type the transcript using SO again
-      triple( 'transcript:'.$transcript->stable_id, 'rdfs:subClassOf', 'obo:SO_0000673');
-      triple( 'transcript:'.$transcript->stable_id, 'a', 'term:transcript');
+      triple( 'transcript:'.$transcript->stable_id, 'a', 'obo:SO_0000673');
+#      triple( 'transcript:'.$transcript->stable_id, 'a', 'term:transcript');
       triple( 'transcript:'.$transcript->stable_id, 'rdfs:label', ($transcript->external_name)? '"'.$transcript->external_name.'"':'"'.$transcript->display_id.'"');
 
       # dump the features
@@ -247,8 +247,8 @@ while (my $gene = shift @$genes) {
       if ($transcript->translation) {
 	  my $trans = $transcript->translation;
 	  triple('transcript:'.$transcript->stable_id, 'obo:SO_translates_to', 'protein:'.$trans->stable_id);
-	  triple('protein:'.$trans->stable_id, 'rdfs:subClassOf', 'obo:SO_0000104');
-	  triple('protein:'.$trans->stable_id, 'a', 'term:protein');
+	  triple('protein:'.$trans->stable_id, 'a', 'obo:SO_0000104');
+	#  triple('protein:'.$trans->stable_id, 'a', 'term:protein');
 	  triple('protein:'.$trans->stable_id, 'dc:identifier', '"'.$trans->stable_id.'"' );
 	  triple('protein:'.$trans->stable_id, 'rdfs:label', '"'.$trans->display_id.'"');
 	  dump_identifers_mapping($trans, 'protein');
@@ -265,8 +265,8 @@ while (my $gene = shift @$genes) {
       foreach my $exon (@exons) {
 	  
 	  # exon type of SO exon, both gene and transcript are linked via has part
-	  triple('exon:'.$exon->stable_id,'rdfs:subClassOf','obo:SO_0000147');
-	  triple('exon:'.$exon->stable_id,'a','term:exon');
+	  triple('exon:'.$exon->stable_id,'a','obo:SO_0000147');
+	  #triple('exon:'.$exon->stable_id,'a','term:exon');
 	  triple('exon:'.$exon->stable_id, 'rdfs:label', '"'.$exon->display_id.'"');
 	  
 	  dump_identifers_mapping($exon, 'exon');
@@ -278,7 +278,7 @@ while (my $gene = shift @$genes) {
 	  
 	  # we add some triple to support querying for order of exons
 	  triple('transcript:'.$transcript->stable_id, 'sio:SIO_000974',  u($prefix{transcript}.$transcript->stable_id.'#Exon_'.$position));
-	  triple('transcript:'.$transcript->stable_id.'#Exon_'.$position,  'rdfs:subClassOf', 'sio:SIO_001261');
+	  triple('transcript:'.$transcript->stable_id.'#Exon_'.$position,  'a', 'sio:SIO_001261');
 	  triple('transcript:'.$transcript->stable_id.'#Exon_'.$position, 'sio:SIO_000628', 'exon:'.$exon->stable_id);
 	  triple('transcript:'.$transcript->stable_id.'#Exon_'.$position, 'sio:SIO_000300', $position);
 	  dump_feature($exon, 'exon');
@@ -325,8 +325,13 @@ sub dump_identifers_mapping {
     if ($genome) {
 	$db = $db.'.'.$genome;
     }
-    triple($namespace.":".$feature->stable_id(), 'rdfs:seeAlso', u($prefix{identifiers}.$db.'/'.$feature->stable_id()));
-	  
+    my $idorguri = $prefix{identifiers}.$db.'/'.$feature->stable_id();
+    triple($namespace.":".$feature->stable_id(), 'rdfs:seeAlso', u($idorguri));
+    
+# implement the SIO identifier type description see https://github.com/dbcls/bh14/wiki/Identifiers.org-working-document
+    my $idorgtype = "http://idtype.identifiers.org/" . $db;
+    triple (u($idorguri), 'a', u("http://identifiers.org/".$db));
+    print OUT u($idorguri) . " SIO:SIO_000671 " .  "[ a <".${idorgtype}.">; SIO:SIO_000300 \"".$feature->stable_id()."\"] .\n";
 }
 
 sub dump_feature {

@@ -1,132 +1,132 @@
-DB name	Example id	Identifiers.org namespace	Canonical LOD URI	Type	ignore	regex
-ArrayExpress	ENSG00000265094				1	
-BaylorCollege	NCRNA_8378				1	
-BioGRID	59420	biogrid				
-CADRE	AFUA_3G01196				1	
-CCDS	CCDS10469	ccds				
-ChEMBL	CHEMBL1075166	chembl.target	http://rdf.ebi.ac.uk/resource/chembl/target/	http://rdf.ebi.ac.uk/terms/chembl#SingleProtein		
-Clone_based_ensembl_gene	AL162430.1				1	
-Clone_based_ensembl_transcript					1	
-Clone_based_vega_gene					1	
-Clone_based_vega_transcript					1	
-DBASS3	80				1	
-EC_NUMBER	2.7.11.23	ec-code				
-EMBL	AABR06092040	ena.embl				
-EMBL_predicted	AAHF01000010	ena.embl				
-ENA_TRANSCRIPT	AFUA_3G01196				1	
-Ens_Hs_transcript	ENST00000266557				1	
-ENS_LRG_gene	LRG_357	lrg				
-ENS_LRG_transcript	LRG_357t1	lrg				
-EntrezGene	100125760	ncbigene		http://purl.obolibrary.org/obo/SO_0000704		
-EntrezGene_trans_name	CTD-2297D10.2-001				1	
-EPD	11050	epd				
-Fantom					1	
-flybase_annotation_id	FBan0011023				1	
-flybase_gene_id	FBgn0031208	flybase				
-flybase_transcript_id	FBtr0300689	flybase				
-flybase_translation_id	FBpp0289913	flybase				
-FlyBaseCGID_gene	CG11023				1	
-FlyBaseCGID_transcript	CG11023-RB				1	
-FlyBaseCGID_translation	CG11023-PB				1	
-FlyBaseName_gene	FBgn0031208	flybase				
-FlyBaseName_transcript	FBtr0300689	flybase				
-FlyBaseName_translation	FBpp0289913	flybase				
-FlyReactome	101824				1	
-GenomeRNAi	33155				1	
-Genoscope_pred_gene	GSTENG10001827001				1	
-Genoscope_pred_translation	GSTENT10001827001				1	
-GO	GO:0000166	go	http://purl.obolibrary.org/obo/			s/GO:/GO_/
-GO_to_gene	GO:0016246	go	http://purl.obolibrary.org/obo/			s/GO:/GO_/
-goslim_goa	GO:0003674	go	http://purl.obolibrary.org/obo/			s/GO:/GO_/
-Gramene_MarkersDB_EST	DT479660				1	
-Gramene_MarkersDB_mRNA	XM_002305109				1	
-Gramene_Pathway	6.3.2.12				1	
-HGNC	HGNC:13598	hgnc				
-HGNC_trans_name	CCRN4L (2 of 2)-201				1	
-HPA	50817				1	
-HPA	HPA050817				1	
-IKMCs_ES_cells_available					1	
-IKMCs_Mice_available					1	
-IKMCs_No_products_available_yet					1	
-IKMCs_Vector_available					1	
-InteractiveFly	/cytoskel/lethl2g1.htm				1	
-Interpro	IPR003653	interpro				
-IPI	IPI00867334				1	
-IRGSPv1_GENE	OS11G0599200				1	
-IRGSPv1_TRANSCRIPT	OS11T0599200-01				1	
-KEGG	00450+2.1.1.-				1	
-MEROPS	C12.001	merops				
-MetaCyc	PWY-7248				1	
-MGI	MGI:102478	mgi				
-MGI_trans_name					1	
-MIM_GENE	602349				1	
-MIM_MORBID	615122				1	
-miRBase	MI0000866	mirbase				
-miRBase	MIMAT0005480	mirbase.mature				
-miRBase_gene_name	dre-let-7a-1.1				1	
-miRBase_trans_name					1	
-MitoDrome	MTDROME11455				1	
-NASC_GENE_ID	AT3G18710				1	
-OTTG	OTTDARG00000029138				1	
-OTTT					1	
-PDB	1AU7	pdb				
-PHI	PHI:2322				1	
-PlantGDB_PUT	PUT-157a-Populus_trichocarpa-7958				1	
-PO	PO:0001185	po	http://purl.obolibrary.org/obo/			s/PO:/PO_/
-protein_id	AAC51247	insdc		http://rdf.ebi.ac.uk/terms/ensembl/NucleotideSequenceDatabase		
-protein_id_predicted	CAF91510	insdc		http://rdf.ebi.ac.uk/terms/ensembl/NucleotideSequenceDatabase		
-PUBMED	10366627	pubmed				
-Reactome	REACT_71	reactome				
-RefSeq_dna	NM_001179183	refseq				
-RefSeq_dna_predicted	XM_001481536	refseq				
-RefSeq_genomic	NG_002398	refseq				
-RefSeq_mRNA	NM_001105043	refseq				
-RefSeq_mRNA_predicted	XM_001084245	refseq				
-RefSeq_ncRNA	NR_022451	refseq				
-RefSeq_ncRNA_predicted	XR_009777	refseq				
-RefSeq_peptide	NP_001006336	refseq				
-RefSeq_peptide_predicted	XP_001107329	refseq				
-RefSeq_rna	NR_001535	refseq				
-RefSeq_rna_predicted	XR_078437	refseq				
-RFAM	RF00001	rfam				
-RFAM_gene_name	5S_rRNA.420				1	
-RFAM_trans_name					1	
-RGD	6486239	rgd				
-RGD_trans_name	Ppm1n-201				1	
-Rhea	NCRNA_8378	rhea				
-RNAMMER	8s_rRNA				1	
-SGD	S0002776	sgd				
-SGD_GENE	S000001097	sgd				
-SGD_TRANSCRIPT	S000001097	sgd				
-shares_CDS_and_UTR_with_OTTT					1	
-shares_CDS_with_OTTT					1	
-TAIR_LOCUS	AT3G18710	tair.locus				
-TAIR_LOCUS_MODEL	AT3G18710.1	tair.locus				
-TAIR_SYMBOL	ATA7				1	
-TAIR_TRANSLATION	AT3G18710				1	
-TIGR_GeneIndex	TC60870				1	
-TIGR_LOCUS	LOC_Os11g38650.1				1	
-TransFac	T01396				1	
-UCSC					1	
-UniGene	Acr.9311	unigene				
-UniParc	UPI00000008FF	uniparc	http://purl.uniprot.org/uniparc/	http://purl.uniprot.org/core/Sequence		
-UniPathway	UPA00545	unipathway				
-Uniprot/SPTREMBL	A4D9Z1	uniprot	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Protein		
-Uniprot/SPTREMBL_predicted	Q4T6H2	uniprot	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Protein		
-Uniprot/SWISSPROT	A0MH06	uniprot	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Reviewed_Protein		
-Uniprot/SWISSPROT_predicted		uniprot	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Reviewed_Protein		
-Uniprot_gn						
-Uniprot_gn_trans_name					1	
-Vega_gene	OTTDARG00000029138				1	
-Vega_transcript					1	
-Vega_translation					1	
-WikiGene	100125760	wikigenes				
-wormbase_gene	WBGene00022613	wormbase				
-wormbase_gseqname	WBGene00022613	wormbase				
-wormbase_locus	WBGene00022613	wormbase				
-wormbase_transcript	ZC449.3a.1				1	
-wormpep_id	CE29622				1	
-Xenbase	XB-GENE-5753086	xenbase				
-Xenbase_trans_name	golt1b-201				1	
-ZFIN_ID	ZDB-GENE-040718-36	zfin				
-ZFIN_ID_trans_name	hvcn1-201				1	
+DB name	Example id	Identifiers.org namespace	Canonical LOD URI	Type	ignore	regex	EDAM type	EDAM term
+ArrayExpress	ENSG00000265094				1			
+BaylorCollege	NCRNA_8378				1			
+BioGRID	59420	biogrid						
+CADRE	AFUA_3G01196				1			
+CCDS	CCDS10469	ccds						
+ChEMBL	CHEMBL1075166	chembl.target	http://rdf.ebi.ac.uk/resource/chembl/target/	http://rdf.ebi.ac.uk/terms/chembl#SingleProtein				
+Clone_based_ensembl_gene	AL162430.1				1			
+Clone_based_ensembl_transcript					1			
+Clone_based_vega_gene					1			
+Clone_based_vega_transcript					1			
+DBASS3	80				1			
+EC_NUMBER	2.7.11.23	ec-code					data_1011	EC number
+EMBL	AABR06092040	ena.embl						
+EMBL_predicted	AAHF01000010	ena.embl						
+ENA_TRANSCRIPT	AFUA_3G01196				1			
+Ens_Hs_transcript	ENST00000266557				1			
+ENS_LRG_gene	LRG_357	lrg						
+ENS_LRG_transcript	LRG_357t1	lrg						
+EntrezGene	100125760	ncbigene		http://purl.obolibrary.org/obo/SO_0000704				
+EntrezGene_trans_name	CTD-2297D10.2-001				1			
+EPD	11050	epd						
+Fantom					1			
+flybase_annotation_id	FBan0011023				1			
+flybase_gene_id	FBgn0031208	flybase						
+flybase_transcript_id	FBtr0300689	flybase						
+flybase_translation_id	FBpp0289913	flybase						
+FlyBaseCGID_gene	CG11023				1			
+FlyBaseCGID_transcript	CG11023-RB				1			
+FlyBaseCGID_translation	CG11023-PB				1			
+FlyBaseName_gene	FBgn0031208	flybase						
+FlyBaseName_transcript	FBtr0300689	flybase						
+FlyBaseName_translation	FBpp0289913	flybase						
+FlyReactome	101824				1			
+GenomeRNAi	33155				1			
+Genoscope_pred_gene	GSTENG10001827001				1			
+Genoscope_pred_translation	GSTENT10001827001				1			
+GO	GO:0000166	go	http://purl.obolibrary.org/obo/			s/GO:/GO_/		
+GO_to_gene	GO:0016246	go	http://purl.obolibrary.org/obo/			s/GO:/GO_/		
+goslim_goa	GO:0003674	go	http://purl.obolibrary.org/obo/			s/GO:/GO_/		
+Gramene_MarkersDB_EST	DT479660				1			
+Gramene_MarkersDB_mRNA	XM_002305109				1			
+Gramene_Pathway	6.3.2.12				1			
+HGNC	HGNC:13598	hgnc						
+HGNC_trans_name	CCRN4L (2 of 2)-201				1			
+HPA	50817				1			
+HPA	HPA050817				1			
+IKMCs_ES_cells_available					1			
+IKMCs_Mice_available					1			
+IKMCs_No_products_available_yet					1			
+IKMCs_Vector_available					1			
+InteractiveFly	/cytoskel/lethl2g1.htm				1			
+Interpro	IPR003653	interpro						
+IPI	IPI00867334				1			
+IRGSPv1_GENE	OS11G0599200				1			
+IRGSPv1_TRANSCRIPT	OS11T0599200-01				1			
+KEGG	00450+2.1.1.-				1			
+MEROPS	C12.001	merops						
+MetaCyc	PWY-7248				1			
+MGI	MGI:102478	mgi						
+MGI_trans_name					1			
+MIM_GENE	602349				1			
+MIM_MORBID	615122				1			
+miRBase	MI0000866	mirbase						
+miRBase	MIMAT0005480	mirbase.mature						
+miRBase_gene_name	dre-let-7a-1.1				1			
+miRBase_trans_name					1			
+MitoDrome	MTDROME11455				1			
+NASC_GENE_ID	AT3G18710				1			
+OTTG	OTTDARG00000029138				1			
+OTTT					1			
+PDB	1AU7	pdb						
+PHI	PHI:2322				1			
+PlantGDB_PUT	PUT-157a-Populus_trichocarpa-7958				1			
+PO	PO:0001185	po	http://purl.obolibrary.org/obo/			s/PO:/PO_/		
+protein_id	AAC51247	insdc		http://rdf.ebi.ac.uk/resource/ensembl/NucleotideSequenceDatabase				
+protein_id_predicted	CAF91510	insdc		http://rdf.ebi.ac.uk/resource/ensembl/NucleotideSequenceDatabase				
+PUBMED	10366627	pubmed						
+Reactome	REACT_71	reactome						
+RefSeq_dna	NM_001179183	refseq						
+RefSeq_dna_predicted	XM_001481536	refseq						
+RefSeq_genomic	NG_002398	refseq						
+RefSeq_mRNA	NM_001105043	refseq						
+RefSeq_mRNA_predicted	XM_001084245	refseq						
+RefSeq_ncRNA	NR_022451	refseq						
+RefSeq_ncRNA_predicted	XR_009777	refseq						
+RefSeq_peptide	NP_001006336	refseq						
+RefSeq_peptide_predicted	XP_001107329	refseq						
+RefSeq_rna	NR_001535	refseq						
+RefSeq_rna_predicted	XR_078437	refseq						
+RFAM	RF00001	rfam						
+RFAM_gene_name	5S_rRNA.420				1			
+RFAM_trans_name					1			
+RGD	6486239	rgd						
+RGD_trans_name	Ppm1n-201				1			
+Rhea	NCRNA_8378	rhea						
+RNAMMER	8s_rRNA				1			
+SGD	S0002776	sgd						
+SGD_GENE	S000001097	sgd						
+SGD_TRANSCRIPT	S000001097	sgd						
+shares_CDS_and_UTR_with_OTTT					1			
+shares_CDS_with_OTTT					1			
+TAIR_LOCUS	AT3G18710	tair.locus						
+TAIR_LOCUS_MODEL	AT3G18710.1	tair.locus						
+TAIR_SYMBOL	ATA7				1			
+TAIR_TRANSLATION	AT3G18710				1			
+TIGR_GeneIndex	TC60870				1			
+TIGR_LOCUS	LOC_Os11g38650.1				1			
+TransFac	T01396				1			
+UCSC					1			
+UniGene	Acr.9311	unigene						
+UniParc	UPI00000008FF	uniparc	http://purl.uniprot.org/uniparc/	http://purl.uniprot.org/core/Sequence				
+UniPathway	UPA00545	unipathway						
+Uniprot/SPTREMBL	A4D9Z1	uniprot	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Protein				
+Uniprot/SPTREMBL_predicted	Q4T6H2	uniprot	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Protein				
+Uniprot/SWISSPROT	A0MH06	uniprot	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Reviewed_Protein				
+Uniprot/SWISSPROT_predicted		uniprot	http://purl.uniprot.org/uniprot/	http://purl.uniprot.org/core/Reviewed_Protein				
+Uniprot_gn								
+Uniprot_gn_trans_name					1			
+Vega_gene	OTTDARG00000029138				1			
+Vega_transcript					1			
+Vega_translation					1			
+WikiGene	100125760	wikigenes						
+wormbase_gene	WBGene00022613	wormbase						
+wormbase_gseqname	WBGene00022613	wormbase						
+wormbase_locus	WBGene00022613	wormbase						
+wormbase_transcript	ZC449.3a.1				1			
+wormpep_id	CE29622				1			
+Xenbase	XB-GENE-5753086	xenbase						
+Xenbase_trans_name	golt1b-201				1			
+ZFIN_ID	ZDB-GENE-040718-36	zfin						
+ZFIN_ID_trans_name	hvcn1-201				1			

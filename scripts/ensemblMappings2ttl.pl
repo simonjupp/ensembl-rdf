@@ -121,6 +121,7 @@ my $scientific_name = $meta->get_scientific_name;
 my %dbname2type;
 my %dbname2base;
 my %dbname2short;
+my %dbname2edam;
 my %dbid2regex;
 my %ignore;
 
@@ -133,7 +134,7 @@ if ($virtgraph) {
     print GRAPH $graphUri;
     close GRAPH;
     # make the species graph a subgraph of the version graph
-    triple (u($graphUri), '<http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf>', u($versionGraphUri)); 
+    triple (u($graphUri), '<http://rdfs.org/ns/void#subset>', u($versionGraphUri)); 
 }
 
 
@@ -151,6 +152,7 @@ while (<DBNAME>) {
     my $typeUri = $split[4];
     my $na = $split[5];
     my $regex = $split[6];
+    my $edamid = $split[7];
     
     if ($na) {
 	$ignore{$dbname} =1;
@@ -167,6 +169,10 @@ while (<DBNAME>) {
     if ($baseUri) {
 	$dbname2base{$dbname} = $baseUri;
     }
+    if ($edamid) {
+	$dbname2edam{$dbname} = $edamid;
+    }
+
 }
 close DBNAME;
 
@@ -324,8 +330,16 @@ sub print_DBEntries
 
 	# use the config file to create a URI for the xref
 	if ($dbname2short{$name}) {
-	    # identifiers.org 
-	    push @xrefUris , "http://identifiers.org/".$dbname2short{$name}."/".$id;
+	    # identifiers.org
+	    my $idorguri = "http://identifiers.org/".$dbname2short{$name}."/".$id;
+	    push @xrefUris , $idorguri ;
+
+	    # implement the SIO identifier type description see https://github.com/dbcls/bh14/wiki/Identifiers.org-working-document
+	    my $idorgtype = "http://idtype.identifiers.org/" . $dbname2short{$name};
+	    triple (u($idorguri), 'a', u("http://identifiers.org/".$dbname2short{$name}));
+	    print OUT u($idorguri) . " SIO:SIO_000671 " .  "[ a <".${idorgtype}.">; SIO:SIO_000300 \"$id\"] .\n";
+	    
+	    
 	}
 	if ($dbname2base{$name}) {
 	    # other, check for any regex
@@ -346,6 +360,7 @@ sub print_DBEntries
 	    triple(u($xrefTypeUri), 'rdfs:subClassOf', 'term:EnsemblExternalDBEntry');
 	    triple(u($xrefTypeUri), 'rdfs:label', '"'.$name.'"');
 	}
+
 
 	# keep a record of combination of source db, relation and type
 	# we use these to spot any types we might have missed on the 
