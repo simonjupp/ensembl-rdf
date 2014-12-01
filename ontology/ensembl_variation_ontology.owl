@@ -1,0 +1,498 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY obo "http://purl.obolibrary.org/obo/" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://rdf.ebi.ac.uk/terms/ensemblvariation#"
+     xml:base="http://rdf.ebi.ac.uk/terms/ensemblvariation"
+     xmlns:obo="http://purl.obolibrary.org/obo/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <owl:Ontology rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/IAO_0000115 -->
+
+    <owl:AnnotationProperty rdf:about="&obo;IAO_0000115">
+        <rdfs:label>definition</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl#has_variant_effect -->
+
+    <owl:ObjectProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensembl#has_variant_effect"/>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_allele -->
+
+    <owl:ObjectProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_allele"/>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_clinical_significance -->
+
+    <owl:ObjectProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_clinical_significance"/>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_feature -->
+
+    <owl:ObjectProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_feature"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_coding_transcript_name -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_coding_transcript_name">
+        <rdfs:subPropertyOf rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_transcript_name"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_genomic_name -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_genomic_name">
+        <rdfs:subPropertyOf rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_name"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_name -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_name"/>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_noncoding_transcript_name -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_noncoding_transcript_name">
+        <rdfs:subPropertyOf rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_transcript_name"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_protein_name -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_protein_name">
+        <rdfs:subPropertyOf rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_name"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_transcript_name -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_transcript_name">
+        <rdfs:subPropertyOf rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_HGVS_name"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_PolyPhen_prediction -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_PolyPhen_prediction"/>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_PolyPhen_score -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_PolyPhen_score"/>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_SIFT_prediction -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_SIFT_prediction"/>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_SIFT_score -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_SIFT_score"/>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_alternate_peptide_sequence -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_alternate_peptide_sequence"/>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_reference_peptide_sequence -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_reference_peptide_sequence"/>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#has_source -->
+
+    <owl:DatatypeProperty rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#has_source">
+        <obo:IAO_0000115>Source information for either data imported into Ensembl Variation or for phenotype associations.</obo:IAO_0000115>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://biohackathon.org/resource/faldo#Region -->
+
+    <owl:Class rdf:about="http://biohackathon.org/resource/faldo#Region">
+        <rdfs:label>region</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0000159 -->
+
+    <owl:Class rdf:about="&obo;SO_0000159">
+        <rdfs:label>deletion</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001059"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0000199 -->
+
+    <owl:Class rdf:about="&obo;SO_0000199">
+        <rdfs:label>translocation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001059"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0000667 -->
+
+    <owl:Class rdf:about="&obo;SO_0000667">
+        <rdfs:label>insertion</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001059"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0000673 -->
+
+    <owl:Class rdf:about="&obo;SO_0000673">
+        <rdfs:label>transcript</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0001019 -->
+
+    <owl:Class rdf:about="&obo;SO_0001019">
+        <rdfs:label>copy number variation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001059"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0001023 -->
+
+    <owl:Class rdf:about="&obo;SO_0001023">
+        <rdfs:label>allele</rdfs:label>
+        <obo:IAO_0000115>An allele is one of a set of coexisting sequence variants of a gene.</obo:IAO_0000115>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0001059 -->
+
+    <owl:Class rdf:about="&obo;SO_0001059">
+        <rdfs:label>sequence alteration</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0001060 -->
+
+    <owl:Class rdf:about="&obo;SO_0001060">
+        <rdfs:label>sequence variant</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://biohackathon.org/resource/faldo#Region"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0001564 -->
+
+    <owl:Class rdf:about="&obo;SO_0001564">
+        <rdfs:label>gene variant</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://biohackathon.org/resource/faldo#Region"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0001566 -->
+
+    <owl:Class rdf:about="&obo;SO_0001566">
+        <rdfs:label>regulatory region variant</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://biohackathon.org/resource/faldo#Region"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0001742 -->
+
+    <owl:Class rdf:about="&obo;SO_0001742">
+        <rdfs:label>copy number gain</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001019"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0001743 -->
+
+    <owl:Class rdf:about="&obo;SO_0001743">
+        <rdfs:label>copy number loss</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001019"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_0001782 -->
+
+    <owl:Class rdf:about="&obo;SO_0001782">
+        <rdfs:label>TF binding site variant</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001566"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_1000002 -->
+
+    <owl:Class rdf:about="&obo;SO_1000002">
+        <rdfs:label>substitution</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001059"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_1000032 -->
+
+    <owl:Class rdf:about="&obo;SO_1000032">
+        <rdfs:label>indel</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001059"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_1000035 -->
+
+    <owl:Class rdf:about="&obo;SO_1000035">
+        <rdfs:label>duplication</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0000667"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/SO_1000173 -->
+
+    <owl:Class rdf:about="&obo;SO_1000173">
+        <rdfs:label>tandem duplication</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_1000035"/>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl#derived_allele -->
+
+    <owl:Class rdf:about="http://rdf.ebi.ac.uk/terms/ensembl#derived_allele">
+        <rdfs:label>derived allele</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001023"/>
+        <obo:IAO_0000115>An allele which is not defined as the ancestral allele.</obo:IAO_0000115>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl#minor_allele -->
+
+    <owl:Class rdf:about="http://rdf.ebi.ac.uk/terms/ensembl#minor_allele">
+        <rdfs:label>minor allele</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001023"/>
+        <obo:IAO_0000115>Least frequently observed allele in a given data set.</obo:IAO_0000115>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensembl#reference_allele -->
+
+    <owl:Class rdf:about="http://rdf.ebi.ac.uk/terms/ensembl#reference_allele">
+        <rdfs:label>reference allele</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001023"/>
+        <obo:IAO_0000115>Allele as defined against a reference genome build.</obo:IAO_0000115>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#ancestral_allele -->
+
+    <owl:Class rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#ancestral_allele">
+        <rdfs:label>ancestral allele</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;SO_0001023"/>
+        <obo:IAO_0000115>The allele that was carried by the common ancestor of the taxon you consider.</obo:IAO_0000115>
+    </owl:Class>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance -->
+
+    <owl:Class rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance">
+        <rdfs:label>clinical significance</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/oban/association -->
+
+    <owl:NamedIndividual rdf:about="http://purl.org/oban/association">
+        <rdf:type rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#benign -->
+
+    <owl:NamedIndividual rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#benign">
+        <rdf:type rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#confers_sensitivity -->
+
+    <owl:NamedIndividual rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#confers_sensitivity">
+        <rdf:type rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance"/>
+        <rdfs:label>confers sensitivity</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#drug_response -->
+
+    <owl:NamedIndividual rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#drug_response">
+        <rdf:type rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance"/>
+        <rdfs:label>drug response</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#likely_benign -->
+
+    <owl:NamedIndividual rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#likely_benign">
+        <rdf:type rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance"/>
+        <rdfs:label>likely benign</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#likely_pathogenic -->
+
+    <owl:NamedIndividual rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#likely_pathogenic">
+        <rdf:type rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance"/>
+        <rdfs:label>likely pathogenic</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#pathogenic -->
+
+    <owl:NamedIndividual rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#pathogenic">
+        <rdf:type rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance"/>
+        <rdfs:label>pathogenic</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#protective -->
+
+    <owl:NamedIndividual rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#protective">
+        <rdf:type rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance"/>
+        <rdfs:label>protective</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#risk_factor -->
+
+    <owl:NamedIndividual rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#risk_factor">
+        <rdf:type rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance"/>
+        <rdfs:label>risk factor</rdfs:label>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://rdf.ebi.ac.uk/terms/ensemblvariation#uncertain_significance -->
+
+    <owl:NamedIndividual rdf:about="http://rdf.ebi.ac.uk/terms/ensemblvariation#uncertain_significance">
+        <rdf:type rdf:resource="http://rdf.ebi.ac.uk/terms/ensemblvariation#clinical_significance"/>
+        <rdfs:label>uncertain significance</rdfs:label>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+
