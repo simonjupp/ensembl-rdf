@@ -278,7 +278,7 @@ while($from_id <= $max_id) {
       # probably define this allele as a subject
       # then we can assign more properties to it
       # reference, ancestral, minor?
-      my $allele_subj = $prefix{$nspace}.$vname.'#'.$allele;
+      my $allele_subj = $prefix{$nspace}.$vname.'#'.replace_whitespace($allele);
   
       triple($vf_subj, "$vpo:has_allele", u($allele_subj));
   
@@ -524,6 +524,12 @@ sub u {
 
 sub l {
   return '"'.escape($_[0]).'"';
+}
+
+sub replace_whitespace {
+    my $string = shift;
+    $string =~ s/\s+/_/;
+    return $string;
 }
 
 sub triple {
