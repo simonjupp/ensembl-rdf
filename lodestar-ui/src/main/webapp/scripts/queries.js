@@ -20,9 +20,9 @@ var exampleQueries = [
         query:
             "SELECT DISTINCT ?transcript ?id ?typeLabel ?referenceLabel ?begin ?end ?location {\n\n" +
             " # query human data only\n" +
-            " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
+            " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/77/9606> {\n" +
             "   ?transcript obo:SO_transcribed_from ensembl:ENSG00000139618 ;\n" +
-            "               rdfs:subClassOf ?type;\n" +
+            "               a ?type;\n" +
             "               dcterms:identifier ?id .\n" +
             " OPTIONAL {\n" +
             "  ?transcript faldo:location ?location .\n" +
@@ -42,7 +42,7 @@ var exampleQueries = [
             "\n" +
             "SELECT DISTINCT ?exon ?id ?referenceLabel ?begin ?end ?strand {\n\n" +
             " # query human data only\n" +
-            " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
+            " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/77/9606> {\n" +
             "   ensembltranscript:ENST00000380152 obo:SO_has_part ?exon;\n" +
             "                           sio:SIO_000974 ?orderedPart .\n" +
             "   ?exon dcterms:identifier ?id .\n" +
@@ -72,7 +72,7 @@ var exampleQueries = [
         query:   "PREFIX core: <http://purl.uniprot.org/core/>\n" +
                  "SELECT DISTINCT ?peptide ?xrefRelationType ?xrefLabel ?xrefUri ?xrefType  {\n" +
                  " # query human data only\n" +
-                 " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
+                 " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/77/9606> {\n" +
                  "  ensembltranscript:ENST00000380152 obo:SO_translates_to ?peptide .\n" +
                  "  ?peptide  dcterms:identifier ?id .\n" +
                  "  ?peptide a ensemblterms:protein ;\n" +
@@ -90,7 +90,7 @@ var exampleQueries = [
         query:           "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
                          "SELECT DISTINCT ?subject ?xrefRelationType ?xrefLabel ?xrefUri ?xrefType ?xrefLabel {\n" +
                          " # query human data only\n" +
-                         " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
+                         " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/77/9606> {\n" +
                          "  {\n" +
                          "    {?subject obo:SO_transcribed_from ensembl:ENSG00000139618}" +
                          "      UNION\n" +
@@ -110,7 +110,7 @@ var exampleQueries = [
         description: "Get all mouse genes on chromosome 11 between location 101,100,523 and 101,190,725 forward strand",
         query:
             "SELECT DISTINCT ?gene ?id ?label ?typelabel ?desc ?reference ?begin ?end {\n" +
-            " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/10090> {\n" +
+            " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/77/10090> {\n" +
             "  ?gene a ?type ;\n" +
             "        rdfs:label ?label ;\n" +
             "        dcterms:description ?desc ;\n" +
@@ -153,7 +153,7 @@ var exampleQueries = [
                  "PREFIX taxon:<http://purl.uniprot.org/taxonomy/>\n" +
                  "SELECT DISTINCT ?peptide ?xrefUri ?xrefLabel ?substitution ?text ?citation {\n" +
                  " # query human data only\n" +
-                 " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/76/9606> {\n" +
+                 " GRAPH <http://rdf.ebi.ac.uk/dataset/ensembl/77/9606> {\n" +
                  "  ?transcript obo:SO_transcribed_from ensembl:ENSG00000172936 .\n" +
                  "  ?transcript obo:SO_translates_to ?peptide .\n" +
                  "  ?peptide a ensemblterms:protein ;\n" +
@@ -180,7 +180,7 @@ var exampleQueries = [
                "# ontologies are also place in their own graph\n" +
                "# this query shows all the graphs available\n\n" +
                "SELECT ?g ?title WHERE {\n" +
-               "?g <http://www.w3.org/2004/03/trix/rdfg-1/subGraphOf> <http://rdf.ebi.ac.uk/dataset/ensembl/76> . \n" +
+               "?g <http://rdfs.org/ns/void#subset> <http://rdf.ebi.ac.uk/dataset/ensembl/77> . \n" +
                "?g dcterms:title ?title . \n" +
                "}"
     }
